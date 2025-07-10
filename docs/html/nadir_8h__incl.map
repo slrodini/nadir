@@ -1,0 +1,21 @@
+<map id="/mnt/d/Code/nadir/inc/nadir/nadir.h" name="/mnt/d/Code/nadir/inc/nadir/nadir.h">
+<area shape="rect" id="Node000001" title="Collects all nadir header files." alt="" coords="170,5,331,45"/>
+<area shape="rect" id="Node000002" href="$abstract__classes_8h.html" title="Interfaces for the Cost function and Iteration call back classes." alt="" coords="5,167,184,192"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="233,48,118,159,114,155,229,44"/>
+<area shape="rect" id="Node000004" href="$adam_8h.html" title="Class for family of Adam adjecent algorithms." alt="" coords="301,93,409,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="277,43,330,83,327,87,274,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="111,240,203,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="107,191,140,228,136,231,103,194"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="314,121,151,166,149,160,312,116"/>
+<area shape="poly" id="edge5_Node000004_Node000003" title=" " alt="" coords="331,121,291,142,248,169,210,201,179,232,175,228,207,197,245,165,288,137,328,116"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="259,167,346,192"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="348,121,321,157,317,154,344,117"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="371,167,445,192"/>
+<area shape="poly" id="edge7_Node000004_Node000006" title=" " alt="" coords="366,117,393,154,389,157,361,121"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="469,167,549,192"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="381,116,473,158,471,163,378,121"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="573,167,648,192"/>
+<area shape="poly" id="edge9_Node000004_Node000008" title=" " alt="" coords="397,116,561,161,559,167,395,121"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="673,167,746,192"/>
+<area shape="poly" id="edge10_Node000004_Node000009" title=" " alt="" coords="409,115,659,164,658,169,408,120"/>
+</map>

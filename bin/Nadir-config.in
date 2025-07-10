@@ -1,0 +1,52 @@
+#! /usr/bin/env bash
+
+# These variables need to exist
+prefix=@prefix@
+
+if [[ $# -eq 0 || -n $(echo $* | egrep -- "--help|-h") ]]; then
+   echo
+   echo "Configuration tool for Nadir"
+   echo "Webpage: https://github.com/slrodini/nadir"
+   echo
+   echo "Usage: Nadir-config [Options]"
+   echo "Options:"
+   echo "  --help | -h : show this help message"
+   echo "  --prefix    : installation prefix"
+   echo "  --incdir    : path to the Nadir header directory"
+   echo "  --libdir    : path to the Nadir library directory"
+   echo "  --cflags    : same as --cppflags"
+   echo "  --ldflags   : compiler flags for use with the linker stage of compilation"
+   echo "  --allflags  : all flags used to compile Nadir. "
+   echo "                Important: the same vectorization flags as Nadir must be used in the project linked with Nadir"
+   echo "  --vecflags  : vectorization flags of Nadir"
+   echo "  --sanflags  : sanitizer flags of Nadir"
+
+fi
+
+OUT=""
+
+tmp=$(echo "$*" | egrep -- '--\<prefix\>')
+test -n "$tmp" && OUT="$OUT @prefix@"
+
+tmp=$(echo "$*" | egrep -- '--\<incdir\>')
+test -n "$tmp" && OUT="$OUT @includedir@"
+
+tmp=$(echo "$*" | egrep -- '--\<libdir\>')
+test -n "$tmp" && OUT="$OUT @libdir@"
+
+tmp=$(echo "$*" | egrep -- '--\<cflags\>')
+test -n "$tmp" && OUT="$OUT @cflags@"
+
+tmp=$(echo "$*" | egrep -- '--\<ldflags\>')
+test -n "$tmp" && OUT="$OUT @ldflags@"
+
+tmp=$(echo "$*" | egrep -- '--\<allflags\>')
+test -n "$tmp" && OUT="$OUT @allflags@"
+
+tmp=$(echo "$*" | egrep -- '--\<sanflags\>')
+test -n "$tmp" && OUT="$OUT @sanflags@"
+
+tmp=$(echo "$*" | egrep -- '--\<vecflags\>')
+test -n "$tmp" && OUT="$OUT @vecflags@"
+
+echo $OUT

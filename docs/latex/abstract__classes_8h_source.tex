@@ -1,0 +1,52 @@
+\doxysection{abstract\+\_\+classes.\+h}
+\hypertarget{abstract__classes_8h_source}{}\label{abstract__classes_8h_source}\index{/mnt/d/Code/nadir/inc/nadir/abstract\_classes.h@{/mnt/d/Code/nadir/inc/nadir/abstract\_classes.h}}
+\mbox{\hyperlink{abstract__classes_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ NADIR\_ABSTRACT\_CLASSES\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ NADIR\_ABSTRACT\_CLASSES\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <Eigen/Core>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{namespace\ }nadir}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classnadir_1_1NadirCostFunction}{NadirCostFunction}}}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classnadir_1_1NadirCostFunction_a98b599d39a45c34c4fc78188856bfe0b}{\string~NadirCostFunction}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classnadir_1_1NadirCostFunction_aee6c0ef2c6a2cda9cd301eeb04dd1157}{Evaluate}}(\textcolor{keyword}{const}\ Eigen::VectorXd\ \&parameters,\ \textcolor{keywordtype}{double}\ \&cost,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Eigen::VectorXd\ \&cost\_derivatives)}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ (void)parameters;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ (void)cost;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ (void)cost\_derivatives;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Calling\ base\ class\ implementation\ of\ NadirCostFunction.\ This\ is\ a\ bug."{}});}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classnadir_1_1NadirCostFunction_a67f3586530d17600abba5945717d7a65}{Evaluate}}(\textcolor{keyword}{const}\ Eigen::VectorXd\ \&parameters,\ \textcolor{keywordtype}{double}\ \&cost)}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ (void)parameters;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ (void)cost;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Calling\ base\ class\ implementation\ of\ NadirCostFunction.\ This\ is\ a\ bug."{}});}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00060\ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classnadir_1_1NadirIterCallback}{NadirIterCallback}}}
+\DoxyCodeLine{00069\ \{}
+\DoxyCodeLine{00070\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classnadir_1_1NadirIterCallback_a1072c06ef1333251b8a014ed96cc1a76}{\string~NadirIterCallback}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classnadir_1_1NadirIterCallback_a164ed725994f4f551c15cb3d861477f5}{Evaluate}}(\textcolor{keyword}{const}\ Eigen::VectorXd\ \&parameters)}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ (void)parameters;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Calling\ base\ class\ implementation\ of\ NadirIterCallback.\ This\ is\ a\ bug."{}});}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00087\ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \}\ \textcolor{comment}{//\ namespace\ nadir}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ NADIR\_ABSTRACT\_CLASSES\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,51 @@
+\doxysection{nadir\+::Adam\+Cost\+Function Class Reference}
+\hypertarget{classnadir_1_1AdamCostFunction}{}\label{classnadir_1_1AdamCostFunction}\index{nadir::AdamCostFunction@{nadir::AdamCostFunction}}
+
+
+Base class for the \doxylink{classnadir_1_1Adam}{Adam} cost function.  
+
+
+
+
+{\ttfamily \#include $<$adam.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnadir_1_1AdamCostFunction_aa1f1cb905de41d6cf4884de08d4c77a4}\label{classnadir_1_1AdamCostFunction_aa1f1cb905de41d6cf4884de08d4c77a4} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Adam\+Cost\+Function} ()=default
+\begin{DoxyCompactList}\small\item\em Virtual destructor. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classnadir_1_1AdamCostFunction_a5a8efe42e7b785a38c1a349d336761b7}{Evaluate}} (const Eigen\+::\+Vector\+Xd \&parameters, double \&cost, Eigen\+::\+Vector\+Xd \&cost\+\_\+derivatives)=0
+\begin{DoxyCompactList}\small\item\em Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for the \doxylink{classnadir_1_1Adam}{Adam} cost function. 
+
+The user is suppose to derive from this class and provide an implemetnation for its body. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classnadir_1_1AdamCostFunction_a5a8efe42e7b785a38c1a349d336761b7}\label{classnadir_1_1AdamCostFunction_a5a8efe42e7b785a38c1a349d336761b7} 
+\index{nadir::AdamCostFunction@{nadir::AdamCostFunction}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!nadir::AdamCostFunction@{nadir::AdamCostFunction}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}}
+{\footnotesize\ttfamily virtual void nadir\+::\+Adam\+Cost\+Function\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{parameters,  }\item[{double \&}]{cost,  }\item[{Eigen\+::\+Vector\+Xd \&}]{cost\+\_\+derivatives }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Input\+: array of parameters at the current step \\
+\hline
+{\em cost} & Output\+: the location where to write the value of the Cost function \\
+\hline
+{\em cost\+\_\+derivatives} & Output\+: the array where to write the value of the gradient of the cost function w.\+r.\+t. the parameters \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/mnt/d/\+Code/nadir/inc/nadir/\mbox{\hyperlink{adam_8h}{adam.\+h}}\end{DoxyCompactItemize}

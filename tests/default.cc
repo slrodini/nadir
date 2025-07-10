@@ -3,6 +3,23 @@
 #include <algorithm>
 #include <random>
 
+class TestCostFunction : public nadir::NadirCostFunction
+{
+   public:
+      TestCostFunction(
+          std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> fnc)
+          : _fnc(fnc)
+      {
+      }
+      void Evaluate(const Eigen::VectorXd &p, double &v, Eigen::VectorXd &g) override
+      {
+         _fnc(p, v, g);
+      }
+
+   private:
+      std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> _fnc;
+};
+
 using adam_var = nadir::Adam::ADAM_VARIANT;
 
 std::pair<double, double> test_gaussian();
@@ -71,7 +88,8 @@ std::pair<double, double> test_gaussian()
       g(0) = 2. * x(0) * exp(-x(0) * x(0));
    };
 
-   nadir::Adam adam(fn, x);
+   TestCostFunction fn_cost(fn);
+   nadir::Adam adam(fn_cost, x);
    nadir::Adam::MetaParameters mp = nadir::Adam::MetaParameters{
        .max_it          = 1000,
        .alpha           = 0.1,
@@ -113,7 +131,8 @@ std::pair<double, double> rosenbrock(double x0, double y0)
       g(0) = 2. * xma - 4. * b * p(0) * ymx2;
    };
 
-   nadir::Adam adam(fn_grad, p);
+   TestCostFunction fn_cost(fn_grad);
+   nadir::Adam adam(fn_cost, p);
    nadir::Adam::MetaParameters mp = nadir::Adam::MetaParameters{
        .variant         = adam_var::RADAM,
        .max_it          = 3000,
@@ -175,7 +194,8 @@ std::pair<double, double> schwefel(long int d, std::ranlux48 &engine)
       }
    };
 
-   nadir::Adam adam(fn_grad, p);
+   TestCostFunction fn_cost(fn_grad);
+   nadir::Adam adam(fn_cost, p);
    nadir::Adam::MetaParameters mp = nadir::Adam::MetaParameters{
        .variant         = adam_var::RADAM,
        .max_it          = 3000,

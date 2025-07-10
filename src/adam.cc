@@ -22,9 +22,7 @@ constexpr double pow_n(double x, size_t n)
 namespace nadir
 {
 // =================================================================================================
-Adam::Adam(std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> fnc,
-           Eigen::VectorXd pars)
-    : _fnc(fnc), _have_callback(false), _parameters(pars)
+Adam::Adam(NadirCostFunction &fnc, Eigen::VectorXd pars) : _fnc(fnc), _parameters(pars)
 {
    _gt        = Eigen::VectorXd::Zero(pars.size());
    _mt        = Eigen::VectorXd::Zero(pars.size());
@@ -37,9 +35,7 @@ Adam::Adam(std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd
 }
 
 // =================================================================================================
-Adam::Adam(std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> fnc,
-           long int n_par)
-    : _fnc(fnc), _have_callback(false)
+Adam::Adam(NadirCostFunction &fnc, long int n_par) : _fnc(fnc)
 {
    _parameters = Eigen::VectorXd::Zero(n_par);
    _gt         = Eigen::VectorXd::Zero(n_par);
@@ -57,7 +53,7 @@ Adam::STATUS Adam::minimize()
 {
    STATUS status = STATUS::SUCCESS;
    size_t t      = 0;
-   _fnc(_parameters, f_old, _gt);
+   _fnc.get().Evaluate(_parameters, f_old, _gt);
 
    while (t < _mp.max_it) {
 
@@ -94,7 +90,7 @@ Adam::STATUS Adam::minimize()
       }
 
       bool cb_res = true;
-      if (_have_callback) cb_res = _fnc_callback(_parameters);
+      if (_fnc_callback) cb_res = _fnc_callback->get().Evaluate(_parameters);
       if (!cb_res) {
          status = STATUS::ABORT;
          break;
@@ -130,7 +126,7 @@ size_t Adam::step(size_t t)
    double alpha_t = _scheduler(t) * _mp.alpha * bias_corr_vt / (1. - pow_n(_mp.beta1, t));
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -156,7 +152,7 @@ size_t Adam::step_ams(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt.array() / (_vt_hat.array().sqrt() + _mp.eps));
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -178,7 +174,7 @@ size_t Adam::step_ams_v2(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt.array() / (_vt_hat.array().sqrt() + _mp.eps));
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -209,7 +205,7 @@ size_t Adam::step_nadam(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt_hat.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -230,7 +226,7 @@ size_t Adam::step_adamw(size_t t)
    _parameters = (_parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps))) *
                  (1. - alpha_t * _mp.lambda);
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -256,7 +252,7 @@ size_t Adam::step_adabelief(size_t t)
    double alpha_t = _scheduler(t) * _mp.alpha * bias_corr_vt / (1. - pow_n(_mp.beta1, t));
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -281,7 +277,7 @@ size_t Adam::step_adabelief_w(size_t t)
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
    _parameters *= (1.0 - _mp.lambda * alpha_t);
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }
@@ -300,7 +296,7 @@ size_t Adam::step_lion(size_t t)
    _parameters  = _parameters.array() - eta_t * _ct.unaryExpr(sign).array();
    _parameters *= (1. - _mp.lambda * eta_t);
 
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
    _mt = _mt * _mp.beta2 + (1 - _mp.beta2) * _gt;
 
    return t;
@@ -330,17 +326,8 @@ size_t Adam::step_radam(size_t t)
       double alpha_t = _scheduler(t) * std::min(_mp.alpha, 1.0e-3) / (1. - pow_n(_mp.beta1, t));
       _parameters    = _parameters - alpha_t * _mt;
    }
-   // double rt = 1.;
-   // if (rho_t > 4) {
-   //    rt = sqrt(rho_inf * (rho_t - 4.) * (rho_t - 2.) / (rho_t * (rho_inf - 4.) * (rho_inf
-   //    - 2.)));
-   // }
-   // double alpha_t = rt * _scheduler(t) * _mp.alpha * sqrt(1. - pow_n(_mp.beta2, t)) /
-   //                  (1. - pow_n(_mp.beta1, t));
 
-   // _parameters = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
-
-   _fnc(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, f_new, _gt);
 
    return t;
 }

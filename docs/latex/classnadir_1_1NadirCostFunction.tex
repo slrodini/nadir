@@ -1,0 +1,70 @@
+\doxysection{nadir\+::Nadir\+Cost\+Function Class Reference}
+\hypertarget{classnadir_1_1NadirCostFunction}{}\label{classnadir_1_1NadirCostFunction}\index{nadir::NadirCostFunction@{nadir::NadirCostFunction}}
+
+
+Base class for the cost function.  
+
+
+
+
+{\ttfamily \#include $<$abstract\+\_\+classes.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnadir_1_1NadirCostFunction_a98b599d39a45c34c4fc78188856bfe0b}\label{classnadir_1_1NadirCostFunction_a98b599d39a45c34c4fc78188856bfe0b} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Nadir\+Cost\+Function} ()=default
+\begin{DoxyCompactList}\small\item\em Virtual destructor. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classnadir_1_1NadirCostFunction_aee6c0ef2c6a2cda9cd301eeb04dd1157}{Evaluate}} (const Eigen\+::\+Vector\+Xd \&parameters, double \&cost, Eigen\+::\+Vector\+Xd \&cost\+\_\+derivatives)
+\begin{DoxyCompactList}\small\item\em Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization, with derivatives. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classnadir_1_1NadirCostFunction_a67f3586530d17600abba5945717d7a65}{Evaluate}} (const Eigen\+::\+Vector\+Xd \&parameters, double \&cost)
+\begin{DoxyCompactList}\small\item\em Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization, without derivatives. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for the cost function. 
+
+The user is suppose to derive from this class and provide an implemetnation for its body. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classnadir_1_1NadirCostFunction_a67f3586530d17600abba5945717d7a65}\label{classnadir_1_1NadirCostFunction_a67f3586530d17600abba5945717d7a65} 
+\index{nadir::NadirCostFunction@{nadir::NadirCostFunction}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!nadir::NadirCostFunction@{nadir::NadirCostFunction}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void nadir\+::\+Nadir\+Cost\+Function\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{parameters,  }\item[{double \&}]{cost }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization, without derivatives. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Input\+: array of parameters at the current step \\
+\hline
+{\em cost} & Output\+: the location where to write the value of the Cost function \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classnadir_1_1NadirCostFunction_aee6c0ef2c6a2cda9cd301eeb04dd1157}\label{classnadir_1_1NadirCostFunction_aee6c0ef2c6a2cda9cd301eeb04dd1157} 
+\index{nadir::NadirCostFunction@{nadir::NadirCostFunction}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!nadir::NadirCostFunction@{nadir::NadirCostFunction}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void nadir\+::\+Nadir\+Cost\+Function\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{parameters,  }\item[{double \&}]{cost,  }\item[{Eigen\+::\+Vector\+Xd \&}]{cost\+\_\+derivatives }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Main function to evaluate the Cost for \doxylink{classnadir_1_1Adam}{Adam} minimization, with derivatives. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Input\+: array of parameters at the current step \\
+\hline
+{\em cost} & Output\+: the location where to write the value of the Cost function \\
+\hline
+{\em cost\+\_\+derivatives} & Output\+: the array where to write the value of the gradient of the cost function w.\+r.\+t. the parameters \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/mnt/d/\+Code/nadir/inc/nadir/\mbox{\hyperlink{abstract__classes_8h}{abstract\+\_\+classes.\+h}}\end{DoxyCompactItemize}

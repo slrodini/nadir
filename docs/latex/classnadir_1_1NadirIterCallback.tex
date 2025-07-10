@@ -1,0 +1,52 @@
+\doxysection{nadir\+::Nadir\+Iter\+Callback Class Reference}
+\hypertarget{classnadir_1_1NadirIterCallback}{}\label{classnadir_1_1NadirIterCallback}\index{nadir::NadirIterCallback@{nadir::NadirIterCallback}}
+
+
+Base class for the Iteration call back function.  
+
+
+
+
+{\ttfamily \#include $<$abstract\+\_\+classes.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnadir_1_1NadirIterCallback_a1072c06ef1333251b8a014ed96cc1a76}\label{classnadir_1_1NadirIterCallback_a1072c06ef1333251b8a014ed96cc1a76} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Nadir\+Iter\+Callback} ()=default
+\begin{DoxyCompactList}\small\item\em Virtual destructor. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classnadir_1_1NadirIterCallback_a164ed725994f4f551c15cb3d861477f5}{Evaluate}} (const Eigen\+::\+Vector\+Xd \&parameters)
+\begin{DoxyCompactList}\small\item\em Main function to evaluate the call back. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for the Iteration call back function. 
+
+The user is suppose to derive from this class and provide an implemetnation for its body. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classnadir_1_1NadirIterCallback_a164ed725994f4f551c15cb3d861477f5}\label{classnadir_1_1NadirIterCallback_a164ed725994f4f551c15cb3d861477f5} 
+\index{nadir::NadirIterCallback@{nadir::NadirIterCallback}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!nadir::NadirIterCallback@{nadir::NadirIterCallback}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}}
+{\footnotesize\ttfamily virtual bool nadir\+::\+Nadir\+Iter\+Callback\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{parameters }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Main function to evaluate the call back. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & Input\+: array of parameters at the current step \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true To continue the minimization 
+
+false To abort the minimization 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/mnt/d/\+Code/nadir/inc/nadir/\mbox{\hyperlink{abstract__classes_8h}{abstract\+\_\+classes.\+h}}\end{DoxyCompactItemize}

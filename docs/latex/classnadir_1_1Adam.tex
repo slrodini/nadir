@@ -1,0 +1,203 @@
+\doxysection{nadir\+::Adam Class Reference}
+\hypertarget{classnadir_1_1Adam}{}\label{classnadir_1_1Adam}\index{nadir::Adam@{nadir::Adam}}
+
+
+Main \doxylink{classnadir_1_1Adam}{Adam} class.  
+
+
+
+
+{\ttfamily \#include $<$adam.\+h$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structnadir_1_1Adam_1_1MetaParameters}{Meta\+Parameters}}
+\begin{DoxyCompactList}\small\item\em Metaparameters for the \doxylink{classnadir_1_1Adam}{Adam} minimizer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnadir_1_1Adam_a9f832e64f5ab4b71b1420e74464a0ef8}\label{classnadir_1_1Adam_a9f832e64f5ab4b71b1420e74464a0ef8} 
+enum class \mbox{\hyperlink{classnadir_1_1Adam_a9f832e64f5ab4b71b1420e74464a0ef8}{STATUS}} \+: unsigned \{ \newline
+{\bfseries SUCCESS} = 0
+, {\bfseries ABORT} = 1
+, {\bfseries MAX\+\_\+\+IT} = 2
+, {\bfseries LOW\+\_\+\+DIFF} = 3
+, \newline
+{\bfseries CONTINUE} = 4
+ \}
+\begin{DoxyCompactList}\small\item\em Status on exit of the minimizer. \end{DoxyCompactList}\item 
+\Hypertarget{classnadir_1_1Adam_adbfcdf6bc962fa867b471f9d246b7b7c}\label{classnadir_1_1Adam_adbfcdf6bc962fa867b471f9d246b7b7c} 
+enum class \mbox{\hyperlink{classnadir_1_1Adam_adbfcdf6bc962fa867b471f9d246b7b7c}{ADAM\+\_\+\+VARIANT}} \+: unsigned \{ \newline
+{\bfseries CLASSIC}
+, {\bfseries AMSGRAD}
+, {\bfseries AMSGRAD\+\_\+\+V2}
+, {\bfseries NADAM}
+, \newline
+{\bfseries ADAMW}
+, {\bfseries ADABELIEF}
+, {\bfseries ADABELIEF\+\_\+W}
+, {\bfseries LION}
+, \newline
+{\bfseries RADAM}
+ \}
+\begin{DoxyCompactList}\small\item\em Variant of the \doxylink{classnadir_1_1Adam}{Adam} base algorithm. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classnadir_1_1Adam_ae55f12d90e2cf54dc07c5452b5c39414}{Set\+Scheduler}} (const std\+::function$<$ double(size\+\_\+t)$>$ \&scheduler)
+\begin{DoxyCompactList}\small\item\em Set the Scheduler object for variable learning rate. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classnadir_1_1Adam_a75e7fa524c0dd80587b2a15c7313acc0}{Set\+Initial\+Parameters}} (const Eigen\+::\+Vector\+Xd \&pars)
+\begin{DoxyCompactList}\small\item\em Set the initial parameters. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classnadir_1_1Adam_ae93869ac3b7ad655bc101f5727e3d932}{Add\+Call\+Back}} (\mbox{\hyperlink{classnadir_1_1NadirIterCallback}{Nadir\+Iter\+Callback}} \&f)
+\begin{DoxyCompactList}\small\item\em Add a callback to the minimizer. \end{DoxyCompactList}\item 
+\Hypertarget{classnadir_1_1Adam_a3ddcd43a5edcbe6dee36e3766ade2a0a}\label{classnadir_1_1Adam_a3ddcd43a5edcbe6dee36e3766ade2a0a} 
+const Eigen\+::\+Vector\+Xd \& {\bfseries Get\+Parameters} () const
+\begin{DoxyCompactList}\small\item\em Return the current set of parameters. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classnadir_1_1Adam_a9c4147311d1bbea6661d25f9839f86af}{Set\+Meta\+Parameters}} (const \mbox{\hyperlink{structnadir_1_1Adam_1_1MetaParameters}{Meta\+Parameters}} \&mp)
+\begin{DoxyCompactList}\small\item\em Set the meta-\/parameters for the minimizer. \end{DoxyCompactList}\item 
+\Hypertarget{classnadir_1_1Adam_a1e2db63a20a6fc35e56043f3ca6cd936}\label{classnadir_1_1Adam_a1e2db63a20a6fc35e56043f3ca6cd936} 
+const \mbox{\hyperlink{structnadir_1_1Adam_1_1MetaParameters}{Meta\+Parameters}} \& {\bfseries Get\+Meta\+Parameters} () const
+\begin{DoxyCompactList}\small\item\em Returns the meta-\/parameters. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classnadir_1_1Adam_a9f832e64f5ab4b71b1420e74464a0ef8}{STATUS}} \mbox{\hyperlink{classnadir_1_1Adam_a80ab9e2e4a121caf2ae4cfe5b94924c2}{minimize}} ()
+\begin{DoxyCompactList}\small\item\em Main function\+: execute the minimization. \end{DoxyCompactList}\item 
+\Hypertarget{classnadir_1_1Adam_ae8c2ccc2ff48f6b169ba7235f5298127}\label{classnadir_1_1Adam_ae8c2ccc2ff48f6b169ba7235f5298127} 
+void {\bfseries Flus\+To\+File} (const std\+::string \&filename) const
+\begin{DoxyCompactList}\small\item\em Flus internal lig buffer to file. \end{DoxyCompactList}\item 
+\Hypertarget{classnadir_1_1Adam_a087022cd9e35b50e8812a30eb9a46f40}\label{classnadir_1_1Adam_a087022cd9e35b50e8812a30eb9a46f40} 
+void {\bfseries Flus\+To\+Stdout} () const
+\begin{DoxyCompactList}\small\item\em Flus internal lig buffer to the stdout. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{Indent}\textbf{ Constructor}\par
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classnadir_1_1Adam_a5290b66b95fcba3145a776c367771952}{Adam}} (\mbox{\hyperlink{classnadir_1_1NadirCostFunction}{Nadir\+Cost\+Function}} \&fnc, Eigen\+::\+Vector\+Xd pars=Eigen\+::\+Vector\+Xd\+::\+Zero(1))
+\begin{DoxyCompactList}\small\item\em Construct a new \doxylink{classnadir_1_1Adam}{Adam} minimizer. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classnadir_1_1Adam_a4a797b8e7e97ba70be3ceac0581d5f59}{Adam}} (\mbox{\hyperlink{classnadir_1_1NadirCostFunction}{Nadir\+Cost\+Function}} \&fnc, long int n\+\_\+par=1)
+\begin{DoxyCompactList}\small\item\em Construct a new \doxylink{classnadir_1_1Adam}{Adam} minimizer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+
+
+\doxysubsection{Detailed Description}
+Main \doxylink{classnadir_1_1Adam}{Adam} class. 
+
+\doxylink{classnadir_1_1Adam}{Adam} minimizer class. It stores the parameters, references to the Cost function and iteration callbacks, and some internal variables. The main function is {\ttfamily minimize} to perform the minimization. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classnadir_1_1Adam_a5290b66b95fcba3145a776c367771952}\label{classnadir_1_1Adam_a5290b66b95fcba3145a776c367771952} 
+\index{nadir::Adam@{nadir::Adam}!Adam@{Adam}}
+\index{Adam@{Adam}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{Adam()}{Adam()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily nadir\+::\+Adam\+::\+Adam (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classnadir_1_1NadirCostFunction}{Nadir\+Cost\+Function}} \&}]{fnc,  }\item[{Eigen\+::\+Vector\+Xd}]{pars = {\ttfamily Eigen\+:\+:VectorXd\+:\+:Zero(1)} }\end{DoxyParamCaption})}
+
+
+
+Construct a new \doxylink{classnadir_1_1Adam}{Adam} minimizer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fnc} & The cost function \\
+\hline
+{\em pars} & The array of initial parameters \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classnadir_1_1Adam_a4a797b8e7e97ba70be3ceac0581d5f59}\label{classnadir_1_1Adam_a4a797b8e7e97ba70be3ceac0581d5f59} 
+\index{nadir::Adam@{nadir::Adam}!Adam@{Adam}}
+\index{Adam@{Adam}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{Adam()}{Adam()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily nadir\+::\+Adam\+::\+Adam (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classnadir_1_1NadirCostFunction}{Nadir\+Cost\+Function}} \&}]{fnc,  }\item[{long int}]{n\+\_\+par = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+Construct a new \doxylink{classnadir_1_1Adam}{Adam} minimizer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fnc} & The cost function \\
+\hline
+{\em n\+\_\+par} & The number of parameters (initial parameters set to 0) \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classnadir_1_1Adam_ae93869ac3b7ad655bc101f5727e3d932}\label{classnadir_1_1Adam_ae93869ac3b7ad655bc101f5727e3d932} 
+\index{nadir::Adam@{nadir::Adam}!AddCallBack@{AddCallBack}}
+\index{AddCallBack@{AddCallBack}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{AddCallBack()}{AddCallBack()}}
+{\footnotesize\ttfamily void nadir\+::\+Adam\+::\+Add\+Call\+Back (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classnadir_1_1NadirIterCallback}{Nadir\+Iter\+Callback}} \&}]{f }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add a callback to the minimizer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f} & The call back \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classnadir_1_1Adam_a80ab9e2e4a121caf2ae4cfe5b94924c2}\label{classnadir_1_1Adam_a80ab9e2e4a121caf2ae4cfe5b94924c2} 
+\index{nadir::Adam@{nadir::Adam}!minimize@{minimize}}
+\index{minimize@{minimize}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{minimize()}{minimize()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classnadir_1_1Adam_a9f832e64f5ab4b71b1420e74464a0ef8}{STATUS}} nadir\+::\+Adam\+::minimize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Main function\+: execute the minimization. 
+
+\begin{DoxyReturn}{Returns}
+STATUS 
+\end{DoxyReturn}
+\Hypertarget{classnadir_1_1Adam_a75e7fa524c0dd80587b2a15c7313acc0}\label{classnadir_1_1Adam_a75e7fa524c0dd80587b2a15c7313acc0} 
+\index{nadir::Adam@{nadir::Adam}!SetInitialParameters@{SetInitialParameters}}
+\index{SetInitialParameters@{SetInitialParameters}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{SetInitialParameters()}{SetInitialParameters()}}
+{\footnotesize\ttfamily void nadir\+::\+Adam\+::\+Set\+Initial\+Parameters (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{pars }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the initial parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pars} & The array of initial parameters \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classnadir_1_1Adam_a9c4147311d1bbea6661d25f9839f86af}\label{classnadir_1_1Adam_a9c4147311d1bbea6661d25f9839f86af} 
+\index{nadir::Adam@{nadir::Adam}!SetMetaParameters@{SetMetaParameters}}
+\index{SetMetaParameters@{SetMetaParameters}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{SetMetaParameters()}{SetMetaParameters()}}
+{\footnotesize\ttfamily void nadir\+::\+Adam\+::\+Set\+Meta\+Parameters (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structnadir_1_1Adam_1_1MetaParameters}{Meta\+Parameters}} \&}]{mp }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the meta-\/parameters for the minimizer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mp} & The meta-\/parameters\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+If this function is not called, the meta-\/parameters are setted to the default ones which may be not appropriate for the problem 
+\end{DoxyNote}
+\Hypertarget{classnadir_1_1Adam_ae55f12d90e2cf54dc07c5452b5c39414}\label{classnadir_1_1Adam_ae55f12d90e2cf54dc07c5452b5c39414} 
+\index{nadir::Adam@{nadir::Adam}!SetScheduler@{SetScheduler}}
+\index{SetScheduler@{SetScheduler}!nadir::Adam@{nadir::Adam}}
+\doxysubsubsection{\texorpdfstring{SetScheduler()}{SetScheduler()}}
+{\footnotesize\ttfamily void nadir\+::\+Adam\+::\+Set\+Scheduler (\begin{DoxyParamCaption}\item[{const std\+::function$<$ double(size\+\_\+t)$>$ \&}]{scheduler }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the Scheduler object for variable learning rate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em scheduler} & The sceduler, as a function of the step count \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/mnt/d/\+Code/nadir/inc/nadir/\mbox{\hyperlink{adam_8h}{adam.\+h}}\end{DoxyCompactItemize}
