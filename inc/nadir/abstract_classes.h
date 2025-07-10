@@ -2,6 +2,10 @@
 #define NADIR_ABSTRACT_CLASSES_H
 
 #include <Eigen/Core>
+#include <optional>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 /**
  * @file abstract_classes.h
@@ -84,6 +88,125 @@ class NadirIterCallback
          throw std::runtime_error(
              "Calling base class implementation of NadirIterCallback. This is a bug.");
       };
+};
+
+/**
+ * @brief Base Minimizer class, purely virtual
+ *
+ * Provides common interface for all derived minimizers
+ */
+class Minimizer
+{
+   public:
+      /// Status on exit of the minimizer
+      enum class STATUS : unsigned {
+         SUCCESS  = 0,
+         ABORT    = 1,
+         MAX_IT   = 2,
+         LOW_DIFF = 3,
+         CONTINUE = 4,
+      };
+
+      /// \name Constructor
+      ///@{
+
+      /**
+       * @brief Construct a new Adam minimizer
+       *
+       * @param fnc  The cost function
+       * @param pars The array of initial parameters
+       */
+      Minimizer(NadirCostFunction &fnc, Eigen::VectorXd pars) : _fnc(fnc), _parameters(pars) {};
+
+      /**
+       * @brief Construct a new Adam minimizer
+       *
+       * @param fnc   The cost function
+       * @param n_par The number of parameters (initial parameters set to 0)
+       */
+      Minimizer(NadirCostFunction &fnc, long int n_par = 1)
+          : _fnc(fnc), _parameters(Eigen::VectorXd::Zero(n_par)) {};
+
+      /**
+       * @brief Empty destructor
+       *
+       */
+      virtual ~Minimizer() = default;
+      ///@}
+
+      /**
+       * @brief Set the initial parameters
+       *
+       * @param pars The array of initial parameters
+       */
+      virtual void SetInitialParameters(const Eigen::VectorXd &pars)
+      {
+         _parameters = pars;
+      }
+
+      /**
+       * @brief Setone of the initial parameters
+       *
+       * @param index The index of the parameter to be setted
+       * @param par   The value of the parameter
+       */
+      virtual void SetInitialParameter(long int index, double par)
+      {
+         _parameters(index) = par;
+      }
+
+      /**
+       * @brief Add a callback to the minimizer
+       *
+       * @param f The call back
+       */
+      void AddCallBack(NadirIterCallback &f)
+      {
+         _fnc_callback = f;
+      }
+
+      /// Return the current set of parameters
+      const Eigen::VectorXd &GetParameters() const
+      {
+         return _parameters;
+      }
+
+      /**
+       * @brief Main function: execute the minimization
+       *
+       * @return STATUS
+       */
+      virtual STATUS minimize() = 0;
+
+      /// Flus internal lig buffer to file
+      void FlusToFile(const std::string &filename) const
+      {
+         std::ofstream file(filename);
+         if (file.is_open()) {
+            file << _buffer.str();
+            file.close();
+         } else {
+            throw std::runtime_error("FlushToFile: Could not open file: " + filename);
+         }
+      }
+
+      /// Flus internal lig buffer to the stdout
+      void FlusToStdout() const
+      {
+         std::cout << _buffer.str() << std::endl;
+      }
+
+   protected:
+      /// The cost function
+      std::reference_wrapper<NadirCostFunction> _fnc;
+      /// The (optional) callback
+      std::optional<std::reference_wrapper<NadirIterCallback>> _fnc_callback;
+
+      /// Vector of parameters to be updated in the minimization
+      Eigen::VectorXd _parameters;
+
+      /// Internal log buffer
+      std::ostringstream _buffer;
 };
 
 } // namespace nadir

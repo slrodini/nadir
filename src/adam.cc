@@ -22,7 +22,7 @@ constexpr double pow_n(double x, size_t n)
 namespace nadir
 {
 // =================================================================================================
-Adam::Adam(NadirCostFunction &fnc, Eigen::VectorXd pars) : _fnc(fnc), _parameters(pars)
+Adam::Adam(NadirCostFunction &fnc, Eigen::VectorXd pars) : Minimizer(fnc, pars)
 {
    _gt        = Eigen::VectorXd::Zero(pars.size());
    _mt        = Eigen::VectorXd::Zero(pars.size());
@@ -35,7 +35,7 @@ Adam::Adam(NadirCostFunction &fnc, Eigen::VectorXd pars) : _fnc(fnc), _parameter
 }
 
 // =================================================================================================
-Adam::Adam(NadirCostFunction &fnc, long int n_par) : _fnc(fnc)
+Adam::Adam(NadirCostFunction &fnc, long int n_par) : Minimizer(fnc, n_par)
 {
    _parameters = Eigen::VectorXd::Zero(n_par);
    _gt         = Eigen::VectorXd::Zero(n_par);

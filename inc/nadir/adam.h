@@ -6,9 +6,6 @@
 #include <Eigen/Core>
 #include <functional>
 #include <optional>
-#include <iostream>
-#include <sstream>
-#include <fstream>
 
 /**
  * @file adam.h
@@ -27,18 +24,9 @@ namespace nadir
  * callbacks, and some internal variables. The main function is `minimize` to perform the
  * minimization.
  */
-class Adam
+class Adam : public Minimizer
 {
    public:
-      /// Status on exit of the minimizer
-      enum class STATUS : unsigned {
-         SUCCESS  = 0,
-         ABORT    = 1,
-         MAX_IT   = 2,
-         LOW_DIFF = 3,
-         CONTINUE = 4,
-      };
-
       /// Variant of the Adam base algorithm
       enum class ADAM_VARIANT : unsigned {
          CLASSIC,
@@ -92,6 +80,8 @@ class Adam
        * @param n_par The number of parameters (initial parameters set to 0)
        */
       Adam(NadirCostFunction &fnc, long int n_par = 1);
+
+      virtual ~Adam() = default;
       ///@}
 
       /**
@@ -102,43 +92,6 @@ class Adam
       void SetScheduler(const std::function<double(size_t)> &scheduler)
       {
          _scheduler = scheduler;
-      }
-
-      /**
-       * @brief Set the initial parameters
-       *
-       * @param pars The array of initial parameters
-       */
-      void SetInitialParameters(const Eigen::VectorXd &pars)
-      {
-         _parameters = pars;
-      }
-
-      /**
-       * @brief Setone of the initial parameters
-       *
-       * @param index The index of the parameter to be setted
-       * @param par   The value of the parameter
-       */
-      void SetInitialParameter(long int index, double par)
-      {
-         _parameters(index) = par;
-      }
-
-      /**
-       * @brief Add a callback to the minimizer
-       *
-       * @param f The call back
-       */
-      void AddCallBack(NadirIterCallback &f)
-      {
-         _fnc_callback = f;
-      }
-
-      /// Return the current set of parameters
-      const Eigen::VectorXd &GetParameters() const
-      {
-         return _parameters;
       }
 
       /**
@@ -165,35 +118,9 @@ class Adam
        *
        * @return STATUS
        */
-      STATUS minimize();
-
-      /// Flus internal lig buffer to file
-      void FlusToFile(const std::string &filename) const
-      {
-         std::ofstream file(filename);
-         if (file.is_open()) {
-            file << _buffer.str();
-            file.close();
-         } else {
-            throw std::runtime_error("FlushToFile: Could not open file: " + filename);
-         }
-      }
-
-      /// Flus internal lig buffer to the stdout
-      void FlusToStdout() const
-      {
-         std::cout << _buffer.str() << std::endl;
-      }
+      STATUS minimize() override;
 
    private:
-      /// The cost function
-      std::reference_wrapper<NadirCostFunction> _fnc;
-      /// The (optional) callback
-      std::optional<std::reference_wrapper<NadirIterCallback>> _fnc_callback;
-
-      /// Vector of parameters to be updated in the minimization
-      Eigen::VectorXd _parameters;
-
       /// Values of previous and current cost function
       double f_new, f_old;
 
@@ -208,9 +135,6 @@ class Adam
 
       /// The scheduler for a time-dependent learning rate (defaulted to unit function)
       std::function<double(size_t)> _scheduler;
-
-      /// Internal log buffer
-      std::ostringstream _buffer;
 
       /// \name Step functions
       ///@{

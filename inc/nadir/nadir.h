@@ -10,5 +10,6 @@
 
 #include "nadir/abstract_classes.h"
 #include "nadir/adam.h"
+#include "nadir/chain_minimizers.h"
 
 #endif
