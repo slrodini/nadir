@@ -83,7 +83,7 @@ class Adam
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      Adam(NadirCostFunction &fnc, Eigen::VectorXd pars = Eigen::VectorXd::Zero(1));
+      Adam(NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       /**
        * @brief Construct a new Adam minimizer
@@ -112,6 +112,17 @@ class Adam
       void SetInitialParameters(const Eigen::VectorXd &pars)
       {
          _parameters = pars;
+      }
+
+      /**
+       * @brief Setone of the initial parameters
+       *
+       * @param index The index of the parameter to be setted
+       * @param par   The value of the parameter
+       */
+      void SetInitialParameter(long int index, double par)
+      {
+         _parameters(index) = par;
       }
 
       /**
