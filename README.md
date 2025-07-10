@@ -3,6 +3,8 @@
 `nadir` is a minimization library that includes a family of variants of the Adam base algorithm
 and in the future will include a number of global, non-gradient based, minimization algorithm.
 
+> The library is still very much work-in-progress. The API is somewhat stable, but major changes can still happen.
+
 ## Installation
 **Prerequisite:** 
 1. You should have installed a C++ compiler with support for C++20.
