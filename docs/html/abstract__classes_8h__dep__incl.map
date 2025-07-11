@@ -1,8 +1,0 @@
-<map id="/mnt/d/Code/nadir/inc/nadir/abstract_classes.h" name="/mnt/d/Code/nadir/inc/nadir/abstract_classes.h">
-<area shape="rect" id="Node000001" title="Interfaces for the Cost function and Iteration call back classes." alt="" coords="53,5,236,45"/>
-<area shape="rect" id="Node000002" href="$adam_8h.html" title="Class for family of Adam adjecent algorithms." alt="" coords="5,93,167,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,58,101,95,97,92,122,55"/>
-<area shape="rect" id="Node000003" href="$nadir_8h.html" title="Collects all nadir header files." alt="" coords="64,181,225,221"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="166,57,181,93,184,113,181,134,171,160,159,182,155,180,166,158,175,133,178,113,175,94,161,58"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,143,134,180,129,183,104,146"/>
-</map>

@@ -491,27 +491,11 @@ size_t TL11::operator()(const SimAnnContext &context)
 SimAnnealing::STATUS SimAnnealing::minimize()
 {
    STATUS status = STATUS::SUCCESS;
-   auto [T0, Tf] = _itx();
-
-   double tmp_sol;
-   _fnc.get().Evaluate(_parameters, tmp_sol);
-
-   SimAnnContext context{
-       .iter                   = 0,
-       .moves                  = 0,
-       .T                      = T0,
-       .cooling_steps          = 0,
-       .failed_candidate_moves = 0,
-       .acceptance_rate        = 1,
-       .incumbent_sol          = tmp_sol,
-       .best_sol               = tmp_sol,
-       .proposed_sol           = tmp_sol,
-       .T0                     = T0,
-       .Tf                     = Tf,
-   };
 
    double tot_generation = 0;
    double accepted       = 0;
+
+   _fnc.get().Evaluate(_parameters, context.proposed_sol);
 
    do {
 
@@ -547,13 +531,24 @@ SimAnnealing::STATUS SimAnnealing::minimize()
 
                // Note: invoke callback only on update of best solution
                if (_fnc_callback) {
-                  _fnc_callback->get().Evaluate(_parameters);
+                  bool force_stop = _fnc_callback->get().Evaluate(_parameters);
+                  if (!force_stop) {
+                     return STATUS::ABORT;
+                  }
                }
             }
          } else {
             context.failed_candidate_moves++;
          }
          context.acceptance_rate = accepted / tot_generation;
+         if (_cb_each_step) {
+            if (_fnc_callback) {
+               bool force_stop = _fnc_callback->get().Evaluate(_parameters);
+               if (!force_stop) {
+                  return STATUS::ABORT;
+               }
+            }
+         }
       }
       _csx(context);
       context.cooling_steps++;
