@@ -35,6 +35,7 @@ int main()
       auto res = test();
       std::cout << res.first << " " << res.second << std::endl;
    }
+   return 0;
 }
 
 std::pair<double, double> rosenbrock(double x0, double y0);

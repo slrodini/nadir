@@ -70,11 +70,10 @@ Adam::STATUS Adam::minimize()
          throw std::runtime_error("Unknown minimization strategy.");
       }
 
-      bool cb_res = true;
-      if (_fnc_callback) cb_res = _fnc_callback->get().Evaluate(_parameters);
-      if (!cb_res) {
-         status = STATUS::ABORT;
-         break;
+      if (_fnc_callback) {
+         if (!_fnc_callback->get().Evaluate(_parameters)) {
+            return STATUS::ABORT;
+         }
       }
       double gradient_norm = sqrt(_gt.squaredNorm());
       if (gradient_norm < _mp.grad_toll) {

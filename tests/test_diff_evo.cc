@@ -35,7 +35,7 @@ std::pair<double, double> test_rosenbrock()
 {
    std::vector<double> deltas_f;
    std::vector<double> deltas_p;
-   for (double i = 01; i < 10; i += 1) {
+   for (double i = -10; i < 10; i += 1) {
       for (double j = -10; j < 10; j += 1) {
          auto [delta_f, delta_p] = rosenbrock(i, j);
          // std::cout << i << " " << j << " " << delta_f << " " << delta_p << std::endl;
@@ -69,30 +69,27 @@ std::pair<double, double> rosenbrock(double x0, double y0)
    };
 
    TestCostFunction fn_cost(fn);
+   nadir::DiffEvolution::MetaParameters mp = {
+       .NP       = 100,
+       .CR       = 0.9,
+       .F        = 0.8,
+       .width    = 1.,
+       .max_iter = 1000,
+   };
 
-   // Fixed initial and final T
-   nadir::IT1 itx(10., 1.0e-4);
-   // Until min tempterature
-   nadir::SC3 scx;
-   // Best of k neighbour
-   nadir::NE3 nex(0.2, p.size(), 10);
-   // Metropolis
-   nadir::AC1 acx;
-   // Geometric cooling
-   nadir::CS2 csx(0.99);
-   // Fix Temperature length
-   nadir::TL1 tlx(50);
+   nadir::DiffEvolution diffevo(mp, fn_cost, p);
 
-   nadir::SimAnnealing annealing(fn_cost, p, itx, scx, nex, acx, csx, tlx);
-
-   nadir::Minimizer::STATUS st = annealing.minimize();
+   nadir::Minimizer::STATUS st = diffevo.minimize();
    (void)st;
-   Eigen::VectorXd diff = (p_true - annealing.GetParameters());
+   Eigen::VectorXd diff = (p_true - diffevo.GetParameters());
 
    double tmp = 0;
-   fn(annealing.GetParameters(), tmp);
+   fn(diffevo.GetParameters(), tmp);
 
    std::pair<double, double> result = {tmp, sqrt(diff.squaredNorm())};
    // annealing.FlusToStdout();
+   // std::cout << p(0) << " " << p(1) << std::endl;
+   // std::cout << diffevo.GetParameters()(0) << " " << diffevo.GetParameters()(1) << std::endl;
+   // std::cout << "=============================================" << std::endl;
    return result;
 }

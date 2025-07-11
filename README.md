@@ -1,6 +1,6 @@
 # Nadir
 
-`nadir` is a minimization library that includes Adam optimizer and many of its variants and a fully customizable Simulated Annealing algorithm.
+`nadir` is a minimization library that includes Adam optimizer and many of its variants, a fully customizable Simulated Annealing algorithm and a Differential Evolution algorithm.
 
 > The library is still very much work-in-progress. The API is somewhat stable, but major changes can still happen.
 
@@ -37,7 +37,7 @@ xargs rm < install_manifest.txt
 
 ## Algorithms
 
-`nadir` provides a number of Adam derived algorithm, as well as a customizable implementation of the Simulated Annealing
+`nadir` provides a number of Adam derived algorithm, a customizable implementation of the Simulated Annealing and a Differential Evolution implementation.
 
 #### Adam and variants
 The implemented variants are:
@@ -67,3 +67,6 @@ The six components are:
 - TLx: Temperature Length (how many step at fix temperature are performed)
 
 > Important: there is no fix upper bound to the computational time or number of iterations, unless a SCx that implements it is used. If you are unsure of your choices, please use a SCx with a fix upper bound of iterations or use the NadirIterCallback class to abort under your condition of choice.
+
+### Differential Evolution
+The algorithm implemented is in 1-to-1 correspondence with the pseudo-code on Wikipedia (https://en.wikipedia.org/wiki/Differential_evolution). The termination condition is not customizable at the moment, and is fixed to be the maximal number of iterations. In the future there may be some more customization options, especially for quick/exploratory runs. 

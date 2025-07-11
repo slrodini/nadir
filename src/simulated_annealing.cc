@@ -1,17 +1,8 @@
 #include "nadir/simulated_annealing.h"
-#include "./ran2.cpp"
+#include "nadir/ran2.h"
 
 namespace nadir
 {
-// =================================================================================================
-// General functions
-// =================================================================================================
-void set_seed(long int seed)
-{
-   if (::seeded) throw std::runtime_error("Cannot seed random engine more than once.");
-   ::seeded = true;
-   ::_idum  = seed;
-}
 
 // =================================================================================================
 // ITx implementations
@@ -35,7 +26,7 @@ void itx_random_walk(NadirCostFunction &fnc, Eigen::VectorXd &pars, size_t n, do
    for (size_t i = 0; i < n; i++) {
       double s = 0.;
       for (long int i = 0; i < pars.size(); i++) {
-         pars(i) += step_size * (2. * ::_random_uniform() - 1.);
+         pars(i) += step_size * (2. * _random_uniform() - 1.);
       }
       fnc.Evaluate(pars, s);
       out.push_back(s);
@@ -163,7 +154,7 @@ void NE3::operator()(SimAnnContext &context, NadirCostFunction &fnc,
 {
    // Randomly generated gaussian around current incumbent
    for (long int i = 0; i < _pars.size(); i++) {
-      _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+      _pars(i) = _incumbent_pars(i) + _width * _random_normal();
    }
    double curr_inc = 0;
    fnc.Evaluate(_pars, curr_inc);
@@ -174,7 +165,7 @@ void NE3::operator()(SimAnnContext &context, NadirCostFunction &fnc,
    for (size_t k = 1; k < _n; k++) {
       // Randomly generated gaussian around current incumbent
       for (long int i = 0; i < _pars.size(); i++) {
-         _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+         _pars(i) = _incumbent_pars(i) + _width * _random_normal();
       }
       fnc.Evaluate(_pars, curr_inc);
 
@@ -193,7 +184,7 @@ void NE4::operator()(SimAnnContext &context, NadirCostFunction &fnc,
 {
    // Randomly generated gaussian around current incumbent
    for (long int i = 0; i < _pars.size(); i++) {
-      _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+      _pars(i) = _incumbent_pars(i) + _width * _random_normal();
    }
    double curr_inc = 0;
    fnc.Evaluate(_pars, curr_inc);
@@ -210,7 +201,7 @@ void NE4::operator()(SimAnnContext &context, NadirCostFunction &fnc,
    for (size_t k = 1; k < _n; k++) {
       // Randomly generated gaussian around current incumbent
       for (long int i = 0; i < _pars.size(); i++) {
-         _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+         _pars(i) = _incumbent_pars(i) + _width * _random_normal();
       }
       fnc.Evaluate(_pars, curr_inc);
 
@@ -234,8 +225,8 @@ void NE5::operator()(SimAnnContext &context, NadirCostFunction &fnc,
                      const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars)
 {
    // Randomly generated gaussian around current incumbent
-   long int i = static_cast<long int>(std::floor(_pars.size() * ::_random_uniform()));
-   _pars(i)   = _incumbent_pars(i) + _width * ::_random_normal();
+   long int i = static_cast<long int>(std::floor(_pars.size() * _random_uniform()));
+   _pars(i)   = _incumbent_pars(i) + _width * _random_normal();
 
    double curr_inc = 0;
    fnc.Evaluate(_pars, curr_inc);
@@ -246,9 +237,9 @@ void NE5::operator()(SimAnnContext &context, NadirCostFunction &fnc,
    for (size_t k = 1; k < _n; k++) {
       // Randomly generated gaussian around current incumbent
 
-      i = static_cast<long int>(std::floor(_pars.size() * ::_random_uniform()));
+      i = static_cast<long int>(std::floor(_pars.size() * _random_uniform()));
 
-      _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+      _pars(i) = _incumbent_pars(i) + _width * _random_normal();
 
       fnc.Evaluate(_pars, curr_inc);
 
@@ -265,8 +256,8 @@ void NE6::operator()(SimAnnContext &context, NadirCostFunction &fnc,
                      const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars)
 {
    // Randomly generated gaussian around current incumbent
-   long int i = static_cast<long int>(std::floor(_pars.size() * ::_random_uniform()));
-   _pars(i)   = _incumbent_pars(i) + _width * ::_random_normal();
+   long int i = static_cast<long int>(std::floor(_pars.size() * _random_uniform()));
+   _pars(i)   = _incumbent_pars(i) + _width * _random_normal();
 
    double curr_inc = 0;
    fnc.Evaluate(_pars, curr_inc);
@@ -281,9 +272,9 @@ void NE6::operator()(SimAnnContext &context, NadirCostFunction &fnc,
 
    for (size_t k = 1; k < _n; k++) {
       // Randomly generated gaussian around current incumbent
-      i = static_cast<long int>(std::floor(_pars.size() * ::_random_uniform()));
+      i = static_cast<long int>(std::floor(_pars.size() * _random_uniform()));
 
-      _pars(i) = _incumbent_pars(i) + _width * ::_random_normal();
+      _pars(i) = _incumbent_pars(i) + _width * _random_normal();
 
       fnc.Evaluate(_pars, curr_inc);
 
@@ -309,7 +300,7 @@ void NE6::operator()(SimAnnContext &context, NadirCostFunction &fnc,
 
 bool AC1::operator()(const SimAnnContext &context)
 {
-   bool r = ::_random_uniform();
+   bool r = _random_uniform();
    return (context.proposed_sol <= context.incumbent_sol) ||
           r < exp(-(context.proposed_sol - context.incumbent_sol) / context.T);
 }
@@ -318,7 +309,7 @@ bool AC2::operator()(const SimAnnContext &context)
 {
    // Early reject if the exponential would be too small
    if ((context.proposed_sol - context.incumbent_sol) > -context.T * _log_eps) return false;
-   bool r = ::_random_uniform();
+   bool r = _random_uniform();
    return (context.proposed_sol <= context.incumbent_sol) ||
           r < exp(-(context.proposed_sol - context.incumbent_sol) / context.T);
 }
@@ -329,7 +320,7 @@ bool AC3::operator()(const SimAnnContext &context)
    double fs  = _quality(context.incumbent_sol);
    double fsp = _quality(context.proposed_sol);
    if (fs < fsp && fsp <= fs * _phi) {
-      bool r = ::_random_uniform();
+      bool r = _random_uniform();
       return r < exp(-(context.proposed_sol - context.incumbent_sol) / context.T);
    } else return false;
 }
@@ -339,7 +330,7 @@ bool AC4::operator()(const SimAnnContext &context)
    if (context.proposed_sol <= context.incumbent_sol) return true;
    double p = exp(-_beta(context.T) * pow(_quality(context.proposed_sol), _g) *
                   (context.proposed_sol - context.incumbent_sol));
-   return ::_random_uniform() < p;
+   return _random_uniform() < p;
 }
 
 bool AC5::operator()(const SimAnnContext &context)
@@ -348,7 +339,7 @@ bool AC5::operator()(const SimAnnContext &context)
       _k++;
       return true;
    }
-   bool r   = ::_random_uniform();
+   bool r   = _random_uniform();
    double p = _p0 * pow_n(_r, _k - 1);
    if (r < p) {
       _k++;
@@ -432,7 +423,7 @@ void CS10::operator()(SimAnnContext &context)
 
 void CS11::operator()(SimAnnContext &context)
 {
-   context.T = _Tx + _a * ::_random_uniform();
+   context.T = _Tx + _a * _random_uniform();
 }
 
 // =================================================================================================

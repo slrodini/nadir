@@ -1,10 +1,11 @@
 #include <mutex>
 #include <cmath>
+#include <stdexcept>
+#include "nadir/ran2.h"
 
-// This is a file included in simulated_annealing.cc
-// IT IS NOT TO BE COMPILED AS A SEPARATE TRANSLATION UNIT, NOR IT IS TO BE USED ANYWHERE ELSE
 namespace
 {
+
 #define IM1 2147483563
 #define IM2 2147483399
 #define AM (1.0 / IM1)
@@ -29,7 +30,7 @@ static bool seeded = false;
 std::mutex _rand_mtx, _rand_mtx_n;
 
 // Implementation of ran2 from Numerical Recipies
-double _random_uniform()
+double _impl_random_uniform()
 {
    double res;
    {
@@ -85,7 +86,7 @@ double _random_uniform()
 #undef EPS
 #undef RNMX
 
-double _random_normal()
+double _impl_random_normal()
 {
    static bool is_set = false;
    static double gset = 0.0;
@@ -95,8 +96,8 @@ double _random_normal()
       double fac, rsq, v1, v2;
       if (!is_set) {
          do {
-            v1  = 2.0 * _random_uniform() - 1.0;
-            v2  = 2.0 * _random_uniform() - 1.0;
+            v1  = 2.0 * _impl_random_uniform() - 1.0;
+            v2  = 2.0 * _impl_random_uniform() - 1.0;
             rsq = v1 * v1 + v2 * v2;
          } while (rsq >= 1.0 || rsq == 0.0);
          fac = sqrt(-2.0 * log(rsq) / rsq);
@@ -112,4 +113,32 @@ double _random_normal()
 
    return deviate;
 }
+
 } // namespace
+
+namespace nadir
+{
+
+void set_seed(long int seed)
+{
+   if (::seeded) throw std::runtime_error("Cannot seed random engine more than once.");
+   ::seeded = true;
+   ::_idum  = seed;
+}
+
+double _random_uniform()
+{
+   return _impl_random_uniform();
+}
+
+double _random_normal()
+{
+   return _impl_random_normal();
+}
+
+size_t _random_uint(size_t n)
+{
+   return static_cast<size_t>(std::max(0., std::floor(n * _impl_random_uniform())));
+}
+
+} // namespace nadir

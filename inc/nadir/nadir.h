@@ -12,5 +12,6 @@
 #include "nadir/adam.h"
 #include "nadir/chain_minimizers.h"
 #include "nadir/simulated_annealing.h"
+#include "nadir/differential_evolution.h"
 
 #endif
