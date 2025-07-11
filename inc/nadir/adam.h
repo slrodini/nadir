@@ -5,7 +5,6 @@
 
 #include <Eigen/Core>
 #include <functional>
-#include <optional>
 
 /**
  * @file adam.h

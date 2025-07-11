@@ -1,24 +1,5 @@
 #include <nadir/adam.h>
 
-namespace
-{
-constexpr double pow_n(double x, size_t n)
-{
-   if (n == 0) return 1.;
-   while (n % 2 == 0) {
-      n /= 2;
-      x *= x;
-   }
-   double result = x;
-   while (n /= 2) {
-      x *= x;
-      if (n % 2 != 0) result *= x;
-   }
-   return result;
-}
-
-} // namespace
-
 namespace nadir
 {
 // =================================================================================================

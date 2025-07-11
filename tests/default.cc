@@ -1,7 +1,6 @@
 #include <nadir/nadir.h>
 #include <iostream>
 #include <algorithm>
-#include <random>
 
 class TestCostFunction : public nadir::NadirCostFunction
 {
