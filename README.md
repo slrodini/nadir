@@ -10,8 +10,8 @@
 2. You should have installed `cmake`
 3. You should have install the [Eigen library](https://eigen.tuxfamily.org/), version >= 3.3. 
    1. Note *i)* If you install Eigen in a directory not searched by default, you can instruct `cmake` to where to look for Eigen via `-DEigen3_DIR=<Eigen-install-prefix>/share/eigen3/cmake`.
-   2. Note *ii)* If you are working with the [Oros library](https://github.com/MapCollaboration/Oros), you can use the Eigen distribution that comes with it. In that case, please use `-DEigen3_DIR=<Oros-install-prefix>/share/Oros/eigen3/cmake` when running `cmake`.
-
+   2. Note *ii)* If you are working with the [Oros library](https://github.com/MapCollaboration/Oros), you can use the Eigen distribution that comes with it. In that case, please use `-DEigen3_DIR=<Oros-install-prefix>/lib/cmake/Oros/eigen` when running `cmake`.
+   3. 
 **Installation:**
 The usual `cmake` procedure. From within `nadir` directory
 ```shell
