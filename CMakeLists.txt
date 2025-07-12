@@ -103,7 +103,12 @@ add_library(Nadir SHARED ${source_files})
 target_link_libraries(Nadir PUBLIC Eigen3::Eigen)
 
 
-target_include_directories(Nadir PUBLIC ${PROJECT_SOURCE_DIR}/inc)
+# target_include_directories(Nadir PUBLIC ${PROJECT_SOURCE_DIR}/inc)
+target_include_directories(Nadir
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>
+        $<INSTALL_INTERFACE:include>
+)
 
 
 enable_testing()
@@ -119,10 +124,45 @@ set(vecflags "${NADIR_VEC_FLAGS}")
 set(sanflags "${SANITIZER_FLAGS}")
 configure_file("${PROJECT_SOURCE_DIR}/bin/Nadir-config.in" "${PROJECT_BINARY_DIR}/bin/Nadir-config")
 
-install(TARGETS Nadir RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+# install(TARGETS Nadir RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install(TARGETS Nadir
+    EXPORT NadirTargets
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    INCLUDES DESTINATION include
+)
 install(DIRECTORY inc/nadir DESTINATION include)
 install(FILES ${PROJECT_BINARY_DIR}/bin/Nadir-config DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install(EXPORT NadirTargets
+    FILE NadirTargets.cmake
+    NAMESPACE Nadir::
+    DESTINATION lib/cmake/Nadir
+)
 
+
+include(CMakePackageConfigHelpers)
+
+# Generate version file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/NadirConfigVersion.cmake"
+    VERSION ${nadir_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+# Configure the package config file
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/NadirConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/NadirConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/Nadir
+)
+
+# Install the package config and version files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/NadirConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/NadirConfigVersion.cmake"
+    DESTINATION lib/cmake/Nadir
+)
 
 # ============================
 # DOCUMENTATION
