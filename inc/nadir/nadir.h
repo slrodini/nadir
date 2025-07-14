@@ -13,5 +13,7 @@
 #include "nadir/chain_minimizers.h"
 #include "nadir/simulated_annealing.h"
 #include "nadir/differential_evolution.h"
+#include "nadir/shampoo.h"
+#include "nadir/bfgs.h"
 
 #endif

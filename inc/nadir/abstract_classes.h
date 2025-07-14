@@ -105,7 +105,35 @@ class Minimizer
          MAX_IT   = 2,
          LOW_DIFF = 3,
          CONTINUE = 4,
+         FAILURE  = 5,
       };
+
+      /// Print the status as a string
+      static inline std::string print_status(STATUS s)
+      {
+         switch (s) {
+         case STATUS::SUCCESS:
+            return "SUCCESS";
+            break;
+         case STATUS::ABORT:
+            return "ABORT";
+            break;
+         case STATUS::MAX_IT:
+            return "MAX_IT";
+            break;
+         case STATUS::LOW_DIFF:
+            return "LOW_DIFF";
+            break;
+         case STATUS::CONTINUE:
+            return "CONTINUE";
+            break;
+         case STATUS::FAILURE:
+            return "FAILURE";
+            break;
+         default:
+            return "";
+         }
+      }
 
       /// \name Constructor
       ///@{

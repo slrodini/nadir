@@ -9,7 +9,7 @@
 1. You should have installed a C++ compiler with support for C++20.
 2. You should have installed `cmake`
 3. You should have install the [Eigen library](https://eigen.tuxfamily.org/), version >= 3.3. 
-   1. Note *i)* If you install Eigen in a directory not searched by default, you can instruct `cmake` to where to look for Eigen via `-DEigen3_DIR=<Eigen-install-prefix>/share/eigen3/cmake`.
+   1. Note *i)* If you install Eigen in a directory not searched by default, you can instruct `cmake` to where to look for Eigen via `-DEigen3_DIR=<Eigen .cmake files location>`.
    2. Note *ii)* If you are working with the [Oros library](https://github.com/MapCollaboration/Oros), you can use the Eigen distribution that comes with it. In that case, please use `-DEigen3_DIR=<Oros-install-prefix>/lib/cmake/Oros/eigen` when running `cmake`.
    3. 
 **Installation:**
@@ -39,8 +39,9 @@ xargs rm < install_manifest.txt
 
 `nadir` provides a number of Adam derived algorithm, a customizable implementation of the Simulated Annealing and a Differential Evolution implementation.
 
-#### Adam and variants
-The implemented variants are:
+### Gradient-based algorithm (Adam and Shampoo)
+#### Adam 
+The implemented Adam variants are:
 - The classical Adam https://arxiv.org/pdf/1412.6980
 - The AMSGrad improved version https://arxiv.org/pdf/1904.09237, https://arxiv.org/pdf/1904.03590 with the bias correction applied before the max (AMSGRAD) or after the max (AMSGRAD_V2)
 - The Nesterov-accellerated Adam https://openreview.net/pdf/OM0jvwB8jIp57ZJjtNEZ.pdf
@@ -51,7 +52,10 @@ The implemented variants are:
 
 More variants are likely to come in the future!
 
-#### Simulated Anneling
+#### Shampoo
+`nadir` comes with an implementation of Shampoo (https://arxiv.org/pdf/1802.09568) for parameters organized in a mono-dimensional vector of arbitrary dimension. It is implemented with an exponential moving average (https://www.cs.toronto.edu/~rgrosse/courses/csc2541_2021/readings/L05_normalization.pdf)
+
+### Simulated Anneling
 
 The Simulated Annealing (SA) implementation is based on the component-based analysis of
 Computers and Operations Research 104 (2019) 191–206 (https://doi.org/10.1016/j.cor.2018.12.015).
