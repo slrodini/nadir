@@ -16,7 +16,7 @@ SOAA::SOAA(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd par
       return 1.;
    };
    _mp    = mp;
-   _dt    = 1.;
+   _dt    = mp.dt0;
    _l_ave = 0.;
    _pr    = 0.;
 }
@@ -36,7 +36,7 @@ SOAA::SOAA(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
       return 1.;
    };
    _mp    = mp;
-   _dt    = 1.;
+   _dt    = mp.dt0;
    _l_ave = 0.;
    _pr    = 0.;
 }
@@ -74,14 +74,16 @@ SOAA::STATUS SOAA::minimize()
 
       _parameters -= alpha_t * _mp.lambda * _parameters + alpha_t * _gt;
 
-      _l_ave       = _mp.beta1 * _l_ave + (1 - _mp.beta1) * f_old;
+      _fnc.get().Evaluate(_parameters, f_new);
+
+      _l_ave       = _mp.beta1 * _l_ave + (1 - _mp.beta1) * f_new;
       double l_hat = _l_ave / (1. - pow_n(_mp.beta1, t));
 
       double p = static_cast<double>(t - 1) / static_cast<double>(_mp.max_it);
 
       _dt = std::min(
           1. + pow(_mp.gamma, p),
-          std::max(pow(1. - _mp.gamma, p), _dt * (l_hat - f_old) / std::max(_pr, _mp.eps)));
+          std::max(pow(1. - _mp.gamma, p), _dt * (l_hat - f_new) / std::max(_pr, _mp.eps)));
 
       _pr = alpha_t * (_mt_hat.dot(_gt) - 0.5 * _vt_hat.dot(_gt.cwiseProduct(_gt)));
 
@@ -104,7 +106,10 @@ SOAA::STATUS SOAA::minimize()
       }
       f_old = f_new;
       _buffer << "- {Iteration: " << t << ", Function value: " << f_new;
-      _buffer << ", Gradient norm: " << gradient_norm << "}" << std::endl;
+      _buffer << ", Gradient norm: " << gradient_norm;
+      _buffer << ", dt: " << _dt;
+      _buffer << ", pr: " << _pr;
+      _buffer << "}" << std::endl;
    }
    if (t == _mp.max_it) status = STATUS::MAX_IT;
    return status;

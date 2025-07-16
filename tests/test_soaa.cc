@@ -6,17 +6,23 @@ class TestCostFunction : public nadir::NadirCostFunction
 {
    public:
       TestCostFunction(
-          std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> fnc)
-          : _fnc(fnc)
+          std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> fnc,
+          std::function<void(const Eigen::VectorXd &, double &)> fnc_0)
+          : _fnc(fnc), _fnc_0(fnc_0)
       {
       }
       void Evaluate(const Eigen::VectorXd &p, double &v, Eigen::VectorXd &g) override
       {
          _fnc(p, v, g);
       }
+      void Evaluate(const Eigen::VectorXd &p, double &v) override
+      {
+         _fnc_0(p, v);
+      }
 
    private:
       std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> _fnc;
+      std::function<void(const Eigen::VectorXd &, double &)> _fnc_0;
 };
 
 std::pair<double, double> rosenbrock(double x0, double y0);
@@ -68,6 +74,9 @@ std::pair<double, double> rosenbrock(double x0, double y0)
       return sq(p(0) - a) + b * sq(p(1) - sq(p(0)));
    };
 
+   auto fn_0 = [&sq, &a, &b](const Eigen::VectorXd &p, double &r) -> void {
+      r = sq(p(0) - a) + b * sq(p(1) - sq(p(0)));
+   };
    auto fn_grad = [&sq, &a, &b](const Eigen::VectorXd &p, double &v, Eigen::VectorXd &g) -> void {
       const double xma  = p(0) - a;
       const double ymx2 = p(1) - sq(p(0));
@@ -77,7 +86,7 @@ std::pair<double, double> rosenbrock(double x0, double y0)
       g(0) = 2. * xma - 4. * b * p(0) * ymx2;
    };
 
-   TestCostFunction fn_cost(fn_grad);
+   TestCostFunction fn_cost(fn_grad, fn_0);
    nadir::SOAA::MetaParameters mp = nadir::SOAA::MetaParameters{
        .max_it          = 10000,
        .alpha           = 0.6,

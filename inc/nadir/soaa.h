@@ -37,8 +37,10 @@ class SOAA : public Minimizer
             double beta2 = 0.999;
             /// Parameter for the decoupled weight decay variants
             double gamma = 0.1;
-            /// Parameter for the decoupled weight decay variants
+            /// ...
             double lambda = 0.;
+            /// initial trust region
+            double dt0 = 10.;
             /// Regulator of the denominator in the update
             double eps = 1.0e-8;
             /// Tollerance on the gradient norm
