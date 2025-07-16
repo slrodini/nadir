@@ -15,5 +15,6 @@
 #include "nadir/differential_evolution.h"
 #include "nadir/shampoo.h"
 #include "nadir/bfgs.h"
+#include "nadir/soaa.h"
 
 #endif

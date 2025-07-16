@@ -37,9 +37,9 @@ xargs rm < install_manifest.txt
 
 ## Algorithms
 
-`nadir` provides a number of Adam derived algorithm, a customizable implementation of the Simulated Annealing and a Differential Evolution implementation.
+`nadir` provides a number of gradient-base algorithm, a customizable implementation of the Simulated Annealing and a Differential Evolution implementation.
 
-### Gradient-based algorithm (Adam and Shampoo)
+### Gradient-based algorithm
 #### Adam 
 The implemented Adam variants are:
 - The classical Adam https://arxiv.org/pdf/1412.6980
@@ -52,8 +52,15 @@ The implemented Adam variants are:
 
 More variants are likely to come in the future!
 
+#### SOAA (SecondOrderAdaptiveAdam)
+Although classifiable as an Adam variant, the SOAA algorithm (https://arxiv.org/pdf/2410.02293) is implemented in its own class, to better encapsulate the specifics of the algorithm. 
+
+
 #### Shampoo
 `nadir` comes with an implementation of Shampoo (https://arxiv.org/pdf/1802.09568) for parameters organized in a mono-dimensional vector of arbitrary dimension. It is implemented with an exponential moving average (https://www.cs.toronto.edu/~rgrosse/courses/csc2541_2021/readings/L05_normalization.pdf)
+
+#### (L-)BFGS
+In `nadir` there is implemented the BFGS (https://en.wikipedia.org/wiki/Broyden-Fletcher-Goldfarb-Shanno_algorithm) algorithm (and its low-memory variant), but are currently unstable and I advise against using them in their current form. The situation might change in the future.
 
 ### Simulated Anneling
 

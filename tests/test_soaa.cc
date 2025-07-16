@@ -19,26 +19,18 @@ class TestCostFunction : public nadir::NadirCostFunction
       std::function<void(const Eigen::VectorXd &, double &, Eigen::VectorXd &)> _fnc;
 };
 
-using adam_var = nadir::Adam::ADAM_VARIANT;
-
-std::pair<double, double> test_gaussian();
+std::pair<double, double> rosenbrock(double x0, double y0);
 std::pair<double, double> test_rosenbrock();
 
 int main()
 {
 
-   std::vector<std::function<std::pair<double, double>()>> tests;
-   tests.push_back(test_gaussian);
-   tests.push_back(test_rosenbrock);
+   std::pair<double, double> res = rosenbrock(2, 2);
+   std::cout << res.first << " " << res.second << std::endl;
 
-   for (auto &test : tests) {
-      auto res = test();
-      std::cout << res.first << " " << res.second << std::endl;
-   }
    return 0;
 }
 
-std::pair<double, double> rosenbrock(double x0, double y0);
 std::pair<double, double> test_rosenbrock()
 {
    std::vector<double> deltas_f;
@@ -55,31 +47,6 @@ std::pair<double, double> test_rosenbrock()
    auto it_p = std::max_element(deltas_f.begin(), deltas_f.end());
 
    return {*it_f, *it_p};
-}
-
-std::pair<double, double> test_gaussian()
-{
-   Eigen::VectorXd x(1);
-   x(0) = 2;
-
-   auto fn = [](const Eigen::VectorXd &x, double &v, Eigen::VectorXd &g) -> void {
-      v    = exp(-x(0) * x(0));
-      g(0) = 2. * x(0) * exp(-x(0) * x(0));
-   };
-
-   TestCostFunction fn_cost(fn);
-   nadir::Adam adam(
-       nadir::Adam::MetaParameters{
-           .max_it          = 1000,
-           .alpha           = 0.1,
-           .diff_value_toll = 1.0e-16,
-       },
-       fn_cost, x);
-
-   nadir::Adam::STATUS st = adam.minimize();
-   (void)st;
-   x = adam.GetParameters();
-   return {exp(-x(0) * x(0)) - 1, std::fabs(x(0))};
 }
 
 std::pair<double, double> rosenbrock(double x0, double y0)
@@ -111,30 +78,20 @@ std::pair<double, double> rosenbrock(double x0, double y0)
    };
 
    TestCostFunction fn_cost(fn_grad);
-   nadir::Adam::MetaParameters mp = nadir::Adam::MetaParameters{
-       .variant         = adam_var::ADABELIEF,
-       .max_it          = 100000,
+   nadir::SOAA::MetaParameters mp = nadir::SOAA::MetaParameters{
+       .max_it          = 10000,
        .alpha           = 0.6,
-       .eps             = 1.0e-4,
-       .grad_toll       = 1.0e-16,
-       .diff_value_toll = 1.0e-16,
-       .lambda          = 0.0001,
+       .gamma           = 0.1,
+       .eps             = 1.0e-8,
+       .grad_toll       = 1.0e-14,
+       .diff_value_toll = 1.0e-14,
    };
-   nadir::Adam adam(mp, fn_cost, p);
+   nadir::SOAA soaa(mp, fn_cost, p);
 
-   auto cosAnnSched = [&mp](size_t t) {
-      double tp        = static_cast<double>(t);
-      double Tp        = static_cast<double>(mp.max_it);
-      double alpha_max = 1.;
-      double alpha_min = 1.0e-5;
-      return alpha_min + 0.5 * (alpha_max - alpha_min) * (1. + cos(M_PI * tp / Tp));
-   };
-   adam.SetScheduler(cosAnnSched);
+   std::cout << nadir::Minimizer::print_status(soaa.minimize()) << std::endl;
 
-   nadir::Adam::STATUS st = adam.minimize();
-   (void)st;
-   Eigen::VectorXd diff             = (p_true - adam.GetParameters());
-   std::pair<double, double> result = {fn(adam.GetParameters()), sqrt(diff.squaredNorm())};
-   // adam.FlusToStdout();
+   Eigen::VectorXd diff             = (p_true - soaa.GetParameters());
+   std::pair<double, double> result = {fn(soaa.GetParameters()), sqrt(diff.squaredNorm())};
+   soaa.FlusToStdout();
    return result;
 }

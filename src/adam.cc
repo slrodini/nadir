@@ -3,30 +3,32 @@
 namespace nadir
 {
 // =================================================================================================
-Adam::Adam(NadirCostFunction &fnc, Eigen::VectorXd pars) : Minimizer(fnc, pars)
+Adam::Adam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+    : Minimizer(fnc, pars)
 {
    _gt        = Eigen::VectorXd::Zero(pars.size());
    _mt        = Eigen::VectorXd::Zero(pars.size());
    _vt        = Eigen::VectorXd::Zero(pars.size());
    _vt_hat    = Eigen::VectorXd::Zero(pars.size());
-   _mp        = MetaParameters();
    _scheduler = [](size_t) {
       return 1.;
    };
+   _mp = mp;
 }
 
 // =================================================================================================
-Adam::Adam(NadirCostFunction &fnc, long int n_par) : Minimizer(fnc, n_par)
+Adam::Adam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
+    : Minimizer(fnc, n_par)
 {
    _parameters = Eigen::VectorXd::Zero(n_par);
    _gt         = Eigen::VectorXd::Zero(n_par);
    _mt         = Eigen::VectorXd::Zero(n_par);
    _vt         = Eigen::VectorXd::Zero(n_par);
    _vt_hat     = Eigen::VectorXd::Zero(n_par);
-   _mp         = MetaParameters();
    _scheduler  = [](size_t) {
       return 1.;
    };
+   _mp = mp;
 }
 
 // =================================================================================================

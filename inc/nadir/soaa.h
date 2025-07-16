@@ -1,5 +1,5 @@
-#ifndef NADIR_ADAM_H
-#define NADIR_ADAM_H
+#ifndef NADIR_SOAA_H
+#define NADIR_SOAA_H
 
 #include "nadir/abstract_classes.h"
 
@@ -7,9 +7,9 @@
 #include <functional>
 
 /**
- * @file adam.h
+ * @file soaa.h
  *
- * @brief Class for family of Adam adjecent algorithms
+ * @brief Class for SOAA algorithm https://arxiv.org/pdf/2410.02293
  *
  */
 
@@ -17,32 +17,16 @@ namespace nadir
 {
 
 /**
- * @brief Main Adam class
+ * @brief Main SOAA class
  *
- * Adam minimizer class. It stores the parameters, references to the Cost function and iteration
- * callbacks, and some internal variables. The main function is `minimize` to perform the
- * minimization.
+ * Although similar to Adam and inspired by it, to this algorithm I dedicate a separate class to
+ * have minimal codependence from the main Adam variants
  */
-class Adam : public Minimizer
+class SOAA : public Minimizer
 {
    public:
-      /// Variant of the Adam base algorithm
-      enum class ADAM_VARIANT : unsigned {
-         CLASSIC,
-         AMSGRAD,
-         AMSGRAD_V2,
-         NADAM,
-         ADAMW,
-         ADABELIEF,
-         ADABELIEF_W, // AdaBelief with decoupled weight decay
-         LION,
-         RADAM,
-      };
-
       /// Metaparameters for the Adam minimizer
       struct MetaParameters {
-            /// Adam varian
-            ADAM_VARIANT variant = ADAM_VARIANT::CLASSIC;
             /// Max number of iteration
             size_t max_it = 100;
             /// Learning rate
@@ -51,36 +35,38 @@ class Adam : public Minimizer
             double beta1 = 0.9;
             /// Exponentaial decay rate for the moving average of the 2st moment
             double beta2 = 0.999;
+            /// Parameter for the decoupled weight decay variants
+            double gamma = 0.1;
+            /// Parameter for the decoupled weight decay variants
+            double lambda = 0.;
             /// Regulator of the denominator in the update
             double eps = 1.0e-8;
             /// Tollerance on the gradient norm
             double grad_toll = 1.0e-8;
             /// Tollerance on the \f$ \Delta F \f$  in subsequent steps
             double diff_value_toll = 1.0e-8;
-            /// Parameter for the decoupled weight decay variants
-            double lambda = 0.;
       };
 
       /// \name Constructor
       ///@{
 
       /**
-       * @brief Construct a new Adam minimizer
+       * @brief Construct a new SOAA minimizer
        *
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      Adam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
+      SOAA(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       /**
-       * @brief Construct a new Adam minimizer
+       * @brief Construct a new SOAA minimizer
        *
        * @param fnc   The cost function
        * @param n_par The number of parameters (initial parameters set to 0)
        */
-      Adam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      SOAA(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
 
-      virtual ~Adam() = default;
+      virtual ~SOAA() = default;
       ///@}
 
       /**
@@ -114,26 +100,20 @@ class Adam : public Minimizer
       Eigen::VectorXd _gt, _mt, _vt;
 
       /// Additional temporary vector for some of the Adam variants
-      Eigen::VectorXd _vt_hat;
+      Eigen::VectorXd _mt_hat, _vt_hat, _Ft;
+
+      /// Trust region scaling
+      double _dt;
+      /// Loss average
+      double _l_ave;
+      /// Predicted reduction
+      double _pr;
 
       /// The meta-parameters of the minimizer
       MetaParameters _mp;
 
       /// The scheduler for a time-dependent learning rate (defaulted to unit function)
       std::function<double(size_t)> _scheduler;
-
-      /// \name Step functions
-      ///@{
-      size_t step(size_t);
-      size_t step_ams(size_t);
-      size_t step_ams_v2(size_t);
-      size_t step_nadam(size_t);
-      size_t step_adamw(size_t);
-      size_t step_adabelief(size_t);
-      size_t step_adabelief_w(size_t);
-      size_t step_lion(size_t);
-      size_t step_radam(size_t);
-      ///@}
 
       /// Sign function, for internal use only
       const std::function<double(double)> sign = [](double x) {
