@@ -16,5 +16,6 @@
 #include "nadir/shampoo.h"
 #include "nadir/bfgs.h"
 #include "nadir/soaa.h"
+#include "nadir/tadam.h"
 
 #endif
