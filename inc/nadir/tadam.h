@@ -38,13 +38,15 @@ class TAdam : public Minimizer
             /// Trust region radius
             double delta_0 = 10.;
             /// Algorithm performance benchmark
-            double gamma = 0.;
+            double gamma = 0.05;
             /// Regulator of the denominator in the update
             double eps = 1.0e-8;
             /// Tollerance on the gradient norm
             double grad_toll = 1.0e-8;
             /// Tollerance on the \f$ \Delta F \f$  in subsequent steps
             double diff_value_toll = 1.0e-8;
+            /// Progress real time to stderr
+            bool real_time_progress = false;
       };
 
       /// \name Constructor

@@ -37,7 +37,6 @@ Adam::STATUS Adam::minimize()
    STATUS status = STATUS::SUCCESS;
    size_t t      = 0;
    _fnc.get().Evaluate(_parameters, f_old, _gt);
-
    while (t < _mp.max_it) {
 
       switch (_mp.variant) {
@@ -90,6 +89,10 @@ Adam::STATUS Adam::minimize()
       f_old = f_new;
       _buffer << "- {Iteration: " << t << ", Function value: " << f_new;
       _buffer << ", Gradient norm: " << gradient_norm << "}" << std::endl;
+      if (_mp.real_time_progress) {
+         std::cerr << "- {Iteration: " << t << ", Function value: " << f_new;
+         std::cerr << ", Gradient norm: " << gradient_norm << "}" << std::endl;
+      }
    }
    if (t == _mp.max_it) status = STATUS::MAX_IT;
    return status;

@@ -59,6 +59,8 @@ class Adam : public Minimizer
             double diff_value_toll = 1.0e-8;
             /// Parameter for the decoupled weight decay variants
             double lambda = 0.;
+            /// Real time progress to stderr
+            bool real_time_progress = false;
       };
 
       /// \name Constructor

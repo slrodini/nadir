@@ -135,6 +135,13 @@ TAdam::STATUS TAdam::minimize()
       _buffer << ", Gradient norm: " << gradient_norm;
       _buffer << ", Trust region radius: " << _delta_t;
       _buffer << "}" << std::endl;
+
+      if (_mp.real_time_progress) {
+         std::cerr << "- {Iteration: " << t << ", Function value: " << f_new;
+         std::cerr << ", Gradient norm: " << gradient_norm;
+         std::cerr << ", Trust region radius: " << _delta_t;
+         std::cerr << "}" << std::endl;
+      }
    }
    if (t == _mp.max_it) status = STATUS::MAX_IT;
    return status;
