@@ -55,6 +55,11 @@ More variants are likely to come in the future!
 #### SOAA (SecondOrderAdaptiveAdam)
 Although classifiable as an Adam variant, the SOAA algorithm (https://arxiv.org/pdf/2410.02293) is implemented in its own class, to better encapsulate the specifics of the algorithm. 
 
+#### TAdam
+The algorithm is taken from (https://doi.org/10.1016/j.neunet.2023.09.010), which is a trust-region version of Adam.
+Again, this algorithm is different enough from base Adam that has its own class.
+Moreover, the implemented algorithm does not uses just the diagonal of the FIsher, but construct the full matrix 
+(see Eqs. right above Eq. 9 of the paper), because it seems to help with stability and convergence.
 
 #### Shampoo
 `nadir` comes with an implementation of Shampoo (https://arxiv.org/pdf/1802.09568) for parameters organized in a mono-dimensional vector of arbitrary dimension. It is implemented with an exponential moving average (https://www.cs.toronto.edu/~rgrosse/courses/csc2541_2021/readings/L05_normalization.pdf)
