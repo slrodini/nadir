@@ -40,6 +40,14 @@ xargs rm < install_manifest.txt
 `nadir` provides a number of gradient-base algorithm, a customizable implementation of the Simulated Annealing and a Differential Evolution implementation.
 
 ### Gradient-based algorithm
+
+#### Levenberg-Marquardt
+`nadir` comes with a very simple implementation of the Levenberg-Marquardt.
+inspired by the [ceres-solver](http://ceres-solver.org/nnls_solving.html) library.
+More details in the book Numerical Optimization [Nocedal-Wright-06](https://link.springer.com/book/10.1007/978-0-387-40065-5).
+
+Note that the interface for this algorithm is different compared to the others in the library, because it requires full knowledge of the residual, and as such is an algorithm designed for working with only non-linear least square problems.
+
 #### Adam 
 The implemented Adam variants are:
 - The classical Adam https://arxiv.org/pdf/1412.6980

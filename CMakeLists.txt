@@ -100,7 +100,9 @@ file(GLOB source_files src/*.cc)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 add_library(Nadir SHARED ${source_files})
 
-target_link_libraries(Nadir PUBLIC Eigen3::Eigen)
+find_package(Ceres QUIET)
+
+target_link_libraries(Nadir PUBLIC Eigen3::Eigen Ceres::ceres)
 
 
 # target_include_directories(Nadir PUBLIC ${PROJECT_SOURCE_DIR}/inc)
