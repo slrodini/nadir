@@ -1,4 +1,6 @@
 #include "nadir/differential_evolution.h"
+#include "nadir/ran2.h"
+#include <functional>
 
 namespace nadir
 {
@@ -81,7 +83,8 @@ Minimizer::STATUS DiffEvolution::minimize()
             (*_c_new)[k] = f_new;
          } else {
             // Remove the changes
-            (*_new)[k] = (*_old)[k];
+            (*_new)[k]   = (*_old)[k];
+            (*_c_new)[k] = (*_c_old)[k];
          }
       }
 
@@ -98,6 +101,11 @@ Minimizer::STATUS DiffEvolution::minimize()
       size_t best_ic = _get_best_parameters(_old, _c_old);
       _buffer << "- {Iteration: " << t << ", Best cost: " << (*_c_old)[best_ic];
       _buffer << "}" << std::endl;
+
+      if (_mp.real_time_progress) {
+         std::cout << "- {Iteration: " << t << ", Best cost: " << (*_c_old)[best_ic];
+         std::cout << "}" << std::endl;
+      }
 
       if (_fnc_callback) {
          if (!_fnc_callback->get().Evaluate(_parameters)) {

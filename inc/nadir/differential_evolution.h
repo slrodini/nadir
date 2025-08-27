@@ -2,10 +2,8 @@
 #define NADIR_DIFFERENTIAL_EVOLUTION_H
 
 #include "nadir/abstract_classes.h"
-#include "nadir/ran2.h"
 
 #include <Eigen/Core>
-#include <functional>
 
 /**
  * @file differential_evolution.h
@@ -27,6 +25,7 @@ class DiffEvolution : public Minimizer
             double F        = 0.8; //!< Differential weight in [0, 2]
             double width    = 1.;  //!< Std for the Gaussian initialization of initial population
             size_t max_iter = 100; //!< Max number of iterations
+            bool real_time_progress = false; //!< Real time stdout
       };
 
       /**

@@ -17,5 +17,6 @@
 #include "nadir/bfgs.h"
 #include "nadir/soaa.h"
 #include "nadir/tadam.h"
+#include "nadir/cma-es.h"
 
 #endif
