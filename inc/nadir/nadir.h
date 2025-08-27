@@ -17,6 +17,5 @@
 #include "nadir/bfgs.h"
 #include "nadir/soaa.h"
 #include "nadir/tadam.h"
-#include "nadir/levenberg_marquardt.h"
 
 #endif
