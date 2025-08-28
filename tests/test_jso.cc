@@ -28,6 +28,11 @@ int main()
       auto res = test();
       std::cout << res.first << " " << res.second << std::endl;
    }
+
+   // auto foo = rosenbrock(4, 6);
+
+   // std::cout << "===========================================================\n";
+   // std::cout << foo.first << " " << foo.second << std::endl;
    return 0;
 }
 
@@ -69,15 +74,10 @@ std::pair<double, double> rosenbrock(double x0, double y0)
    };
 
    TestCostFunction fn_cost(fn);
-   nadir::DiffEvolution::MetaParameters mp = {
-       .NP       = 100,
-       .CR       = 0.9,
-       .F        = 0.8,
-       .width    = 1.,
-       .max_iter = 1000,
-   };
+   nadir::jSOa::MetaParameters mp = {
+       .impr_archive_eviction = true, .max_iter = 300, .real_time_progress = false};
 
-   nadir::DiffEvolution diffevo(mp, fn_cost, p);
+   nadir::jSOa diffevo(mp, fn_cost, p);
 
    nadir::Minimizer::STATUS st = diffevo.minimize();
    (void)st;

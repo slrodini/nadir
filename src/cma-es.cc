@@ -197,11 +197,15 @@ CMA_ES::STATUS CMA_ES::minimize()
       }
       C = 0.5 * (C + C.transpose());
 
-      _buffer << "- {Iteration: " << t << ", Function value: " << costs[costs_indexes[0]];
+      _buffer << "- {Iteration: " << t;
+      _buffer << ", Function value: " << costs[costs_indexes[0]];
+      _buffer << ", sigma: " << _sigma;
       _buffer << "}" << std::endl;
 
       if (_mp.real_time_progress) {
-         std::cerr << "- {Iteration: " << t << ", Function value: " << costs[costs_indexes[0]];
+         std::cerr << "- {Iteration: " << t;
+         std::cerr << ", Function value: " << costs[costs_indexes[0]];
+         std::cerr << ", sigma: " << _sigma;
          std::cerr << "}" << std::endl;
       }
 
@@ -255,11 +259,13 @@ CMA_ES::STATUS CMA_ES::ipop_minimize(CMA_ES::IPOP_MetaParameters ipop_mp)
 
       const bool run_large = (evals_large <= evals_small);
 
-      size_t lambda;
-      double sigma0;
       if (run_large) {
-         lambda = std::lround(lambda_def * std::pow(ipop_mp.pop_growth, k_large));
-         sigma0 = ipop_mp.sigma_ref;
+         _mp.lambda = std::lround(lambda_def * std::pow(ipop_mp.pop_growth, k_large));
+         _mp.sigma  = ipop_mp.sigma_ref;
+
+         for (long int i = 0; i < _p0.size(); i++) {
+            _parameters(i) += _mp.sigma * _random_normal();
+         }
       } else {
          const size_t lambda_large = (size_t)std::lround(
              lambda_def * std::pow(ipop_mp.pop_growth, std::max<size_t>(k_large, 1)));
@@ -269,24 +275,25 @@ CMA_ES::STATUS CMA_ES::ipop_minimize(CMA_ES::IPOP_MetaParameters ipop_mp)
 
          double lt = 0.5 * lambda_def *
                      pow((double)lambda_large / (double)lambda_def, pow(_random_uniform(), 2));
-         lambda = std::clamp((size_t)std::floor(lt), lambda_def, lambda_large / 2);
+         _mp.lambda = std::clamp((size_t)std::floor(lt), lambda_def, lambda_large / 2);
 
          // sigma0 = ipop_mp.sigma_ref * ((1. - 1.0e-2) * _random_uniform() + 1.0e-2);
-         double u = _random_uniform();
-         sigma0   = ipop_mp.sigma_ref * std::pow(10.0, -2.0 * u);
+         double u  = _random_uniform();
+         _mp.sigma = ipop_mp.sigma_ref * std::pow(10.0, -2.0 * u);
+
+         _parameters = p_best;
       }
 
-      // _parameters = _p0;
-      _parameters = p_best;
-      _mp.sigma   = sigma0;
-      _mp.lambda  = lambda;
-
+      _init();
       (void)minimize(); // single run
 
       evals_total += _cached_single_run.fnc_eval;
-      if (run_large) evals_large += _cached_single_run.fnc_eval;
-      else evals_small += _cached_single_run.fnc_eval;
-      if (run_large) ++k_large;
+      if (run_large) {
+         evals_large += _cached_single_run.fnc_eval;
+         k_large++;
+      } else {
+         evals_small += _cached_single_run.fnc_eval;
+      }
 
       if (_cached_single_run.fnc_best < global_best) {
          global_best = _cached_single_run.fnc_best;

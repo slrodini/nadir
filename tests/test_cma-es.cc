@@ -71,10 +71,10 @@ std::pair<double, double> rosenbrock(double x0, double y0)
 
    TestCostFunction fn_cost(fn);
 
-   nadir::CMA_ES diffevo({.sigma = 1., .max_fnc_eval = 100000, .max_iter = 100}, fn_cost, p);
+   nadir::CMA_ES diffevo({.sigma = 1., .max_fnc_eval = 100000, .max_iter = 200}, fn_cost, p);
 
    // nadir::Minimizer::STATUS st = diffevo.minimize();
-   auto st = diffevo.ipop_minimize({.sigma_ref = 2., .max_iter = 20});
+   auto st = diffevo.ipop_minimize({.sigma_ref = 10., .max_iter = 20});
    (void)st;
    Eigen::VectorXd diff = (p_true - diffevo.GetParameters());
 

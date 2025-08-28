@@ -21,6 +21,9 @@ double _random_normal();
 /// Random int in [0, n)
 size_t _random_uint(size_t n);
 
+double _random_cauchy();
+double _random_cauchy(double m, double s);
+
 } // namespace nadir
 
 #endif // NADIR_RAN2_H

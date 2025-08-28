@@ -141,4 +141,14 @@ size_t _random_uint(size_t n)
    return static_cast<size_t>(std::max(0., std::floor(n * _impl_random_uniform())));
 }
 
+double _random_cauchy()
+{
+   return tan(M_PI * (_random_uniform() - 0.5));
+}
+
+double _random_cauchy(double m, double s)
+{
+   return m + s * _random_cauchy();
+}
+
 } // namespace nadir

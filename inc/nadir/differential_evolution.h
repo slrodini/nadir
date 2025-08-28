@@ -39,7 +39,6 @@ class DiffEvolution : public Minimizer
           : Minimizer(fnc, pars), _mp(mp)
       {
          _check_meta_parameters();
-         _init();
       };
 
       /**
@@ -53,13 +52,11 @@ class DiffEvolution : public Minimizer
           : Minimizer(fnc, n_par), _mp(mp)
       {
          _check_meta_parameters();
-         _init();
       }
 
       virtual void SetInitialParameters(const Eigen::VectorXd &pars) override
       {
          _parameters = pars;
-         _init();
       }
 
       /// Remove ability to set parameters individually after initialization
@@ -77,18 +74,86 @@ class DiffEvolution : public Minimizer
       STATUS minimize() override;
 
    private:
-      MetaParameters _mp;                           //!< Meta-parameters
-      std::vector<Eigen::VectorXd> _population_old; //!< Population of parameters
-      std::vector<Eigen::VectorXd> _population_new; //!< Population of parameters
-      std::vector<double> _costs_old; //!< Values of cost functions per parameter set in population
-      std::vector<double> _costs_new; //!< Values of cost functions per parameter set in population
-
+      MetaParameters _mp; //!< Meta-parameters
       /// Check consistency of metaparameters
       void _check_meta_parameters();
-      /// Reset the Minimizer state
-      void _init();
       /// Select three distinct indexes from each other and from fix index x
       void _get_a_b_c_index(size_t x, size_t &a, size_t &b, size_t &c);
+      /// Extract best set of parameters from population
+      size_t _get_best_parameters(std::vector<Eigen::VectorXd> *pop, std::vector<double> *costs);
+};
+
+class jSOa : public Minimizer
+{
+   public:
+      /// Differential Evolution meta-parameters
+      struct MetaParameters {
+            /// initial Population size >= 4
+            size_t NP_ini = 100;
+            /// Minimal population size
+            size_t NP_min = 4;
+            /// Highest p-percentile
+            double p_max = 0.25;
+            /// Lowest p-percentile
+            double p_min = 0.125;
+            /// Use 'a' variant of jSO
+            bool impr_archive_eviction = true;
+            /// If jSOa, percentage of tail
+            double ap = 0.2;
+            /// Terminal value for CR
+            double CR_term = 0.1;
+            /// History size
+            size_t H = 5;
+            /// Search width
+            double width = 1.;
+            /// Max iterations
+            size_t max_iter = 100;
+            /// Progress to std::cout(cerr)
+            bool real_time_progress = false;
+      };
+
+      /**
+       * @brief Construct a new DiffEvolution Minimizer
+       *
+       * @param mp   Meta-parameters
+       * @param fnc  Cost function
+       * @param pars Initial parameters (center of random generation)
+       */
+      jSOa(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+          : Minimizer(fnc, pars), _mp(mp) {};
+
+      /**
+       * @brief Construct a new DiffEvolution Minimizer
+       *
+       * @param mp    Meta-parameters
+       * @param fnc   Cost function
+       * @param n_par Number of parameters
+       */
+      jSOa(MetaParameters mp, NadirCostFunction &fnc, long int n_par = 1)
+          : Minimizer(fnc, n_par), _mp(mp) {};
+
+      virtual void SetInitialParameters(const Eigen::VectorXd &pars) override
+      {
+         _parameters = pars;
+      }
+
+      /// Remove ability to set parameters individually after initialization
+      virtual void SetInitialParameter(long int, double) override
+      {
+         throw std::runtime_error(
+             "Differential Evolution cannot set parameters after initialization.");
+      }
+
+      /**
+       * @brief Main function: execute the minimization
+       *
+       * @return STATUS, either SUCCESS or ABORT
+       */
+      STATUS minimize() override;
+
+   private:
+      MetaParameters _mp; //!< Meta-parameters
+
       /// Extract best set of parameters from population
       size_t _get_best_parameters(std::vector<Eigen::VectorXd> *pop, std::vector<double> *costs);
 };
