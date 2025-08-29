@@ -1,7 +1,7 @@
 #ifndef NADIR_SCX_SIMULATED_ANNEALING_H
 #define NADIR_SCX_SIMULATED_ANNEALING_H
 
-#include "nadir/context_simulated_annealing.h"
+#include "nadir/sim_ann/context_simulated_annealing.h"
 
 /**
  * @file scx_simulated_annealing.h
@@ -27,7 +27,6 @@ enum class SCxCase {
    // SC5, /* max temperature restarts, not provided */
    SC6, /* max failed consecutive candidate moves */
    SC7, /* min total acceptance rate */
-   CUSTOM,
 
 };
 

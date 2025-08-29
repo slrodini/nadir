@@ -39,7 +39,7 @@ Minimizer::STATUS DiffEvolution::minimize()
    for (size_t i = 0; i < _mp.NP; i++) {
       _population_old.push_back(Eigen::VectorXd::Zero(_parameters.size()));
       for (long int k = 0; k < _parameters.size(); k++) {
-         _population_old[i](k) = _parameters(k) + _mp.width * _random_normal();
+         _population_old[i](k) = _parameters(k) + _mp.width * ran2.normal();
       }
       double tmp = 0;
       _fnc.get().Evaluate(_population_old[i], tmp);
@@ -66,10 +66,10 @@ Minimizer::STATUS DiffEvolution::minimize()
       for (size_t k = 0; k < (*_old).size(); k++) {
          size_t ia, ib, ic;
          _get_a_b_c_index(k, ia, ib, ic);
-         size_t R = _random_uint(n_par);
+         size_t R = ran2.uniform_uint(n_par);
 
          for (size_t j = 0; j < n_par; j++) {
-            if (j == R || _random_uniform() < _mp.CR) {
+            if (j == R || ran2.uniform() < _mp.CR) {
                (*_new)[k](j) = (*_old)[ia](j) + _mp.F * ((*_old)[ib](j) - (*_old)[ic](j));
             } else {
                (*_new)[k](j) = (*_old)[k](j);
@@ -120,17 +120,17 @@ void DiffEvolution::_get_a_b_c_index(size_t x, size_t &a, size_t &b, size_t &c)
    size_t n = _mp.NP;
    a        = x;
    while (a == x) {
-      a = _random_uint(n);
+      a = ran2.uniform_uint(n);
    }
 
    b = x;
    while (b == x || b == a) {
-      b = _random_uint(n);
+      b = ran2.uniform_uint(n);
    }
 
    c = x;
    while (c == x || c == a || c == b) {
-      c = _random_uint(n);
+      c = ran2.uniform_uint(n);
    }
 }
 
@@ -162,7 +162,7 @@ jSOa::STATUS jSOa::minimize()
    for (size_t i = 0; i < _mp.NP_ini; i++) {
       _population_old.push_back(Eigen::VectorXd::Zero(_parameters.size()));
       for (long int k = 0; k < _parameters.size(); k++) {
-         _population_old[i](k) = _parameters(k) + _mp.width * _random_normal();
+         _population_old[i](k) = _parameters(k) + _mp.width * ran2.normal();
       }
       double tmp = 0;
       _fnc.get().Evaluate(_population_old[i], tmp);
@@ -198,16 +198,16 @@ jSOa::STATUS jSOa::minimize()
    std::vector<size_t> archive_indexes;
    size_t A_size = NP;
 
-   auto get_r1_r2 = [&NP, &archive](size_t x) -> std::pair<size_t, size_t> {
+   auto get_r1_r2 = [&NP, &archive, this](size_t x) -> std::pair<size_t, size_t> {
       size_t a, b;
       a = x;
       while (a == x) {
-         a = _random_uint(NP);
+         a = ran2.uniform_uint(NP);
       }
 
       b = x;
       while (b == x || b == a) {
-         b = _random_uint(NP + archive.size());
+         b = ran2.uniform_uint(NP + archive.size());
       }
       return {a, b};
    };
@@ -234,7 +234,7 @@ jSOa::STATUS jSOa::minimize()
          return archive_cost[u] < archive_cost[v];
       });
 
-      size_t repl_idx        = archive_indexes[A - tail + _random_uint(tail)];
+      size_t repl_idx        = archive_indexes[A - tail + ran2.uniform_uint(tail)];
       archive[repl_idx]      = parent;
       archive_cost[repl_idx] = fparent;
    };
@@ -265,7 +265,7 @@ jSOa::STATUS jSOa::minimize()
                        });
 
       for (size_t i = 0; i < NP; i++) {
-         size_t ri = _random_uint(_mp.H);
+         size_t ri = ran2.uniform_uint(_mp.H);
          // if (ri == _mp.H - 1) {
          //    M_CR[ri] = 0.9;
          //    M_F[ri]  = 0.9;
@@ -276,7 +276,7 @@ jSOa::STATUS jSOa::minimize()
          if (M_CR[ri] < 0) {
             CRi = 0;
          } else {
-            CRi = std::clamp(0.1 * _random_normal() + M_CR[ri], 0., 1.);
+            CRi = std::clamp(0.1 * ran2.normal() + M_CR[ri], 0., 1.);
          }
 
          if (t < 0.25 * _mp.max_iter) {
@@ -286,14 +286,14 @@ jSOa::STATUS jSOa::minimize()
          }
 
          do {
-            Fi = _random_cauchy(M_F[ri], 0.1);
+            Fi = ran2.cauchy(M_F[ri], 0.1);
          } while (Fi <= 0);
          Fi = std::min(Fi, 1.0);
          if (t < 0.6 * _mp.max_iter && Fi > 0.7) {
             Fi = 0.7;
          }
 
-         size_t pbest = costs_indexes[_random_uint(pcount)];
+         size_t pbest = costs_indexes[ran2.uniform_uint(pcount)];
 
          auto [r1, r2] = get_r1_r2(i);
          double Fw     = Fi;
@@ -301,10 +301,10 @@ jSOa::STATUS jSOa::minimize()
          else if (t < 0.4 * _mp.max_iter) Fw *= 0.8;
          else Fw *= 1.2;
 
-         size_t R = _random_uint(n_par);
+         size_t R = ran2.uniform_uint(n_par);
          if (r2 >= NP) {
             for (size_t j = 0; j < n_par; j++) {
-               if (j == R || _random_uniform() < CRi) {
+               if (j == R || ran2.uniform() < CRi) {
                   (*_new)[i](j) = (*_old)[i](j) + Fw * ((*_old)[pbest](j) - (*_old)[i](j)) +
                                   Fi * ((*_old)[r1](j) - archive[r2 - NP](j));
                } else {
@@ -313,7 +313,7 @@ jSOa::STATUS jSOa::minimize()
             }
          } else {
             for (size_t j = 0; j < n_par; j++) {
-               if (j == R || _random_uniform() < CRi) {
+               if (j == R || ran2.uniform() < CRi) {
                   (*_new)[i](j) = (*_old)[i](j) + Fw * ((*_old)[pbest](j) - (*_old)[i](j)) +
                                   Fi * ((*_old)[r1](j) - (*_old)[r2](j));
                } else {
@@ -401,7 +401,7 @@ jSOa::STATUS jSOa::minimize()
                                    return archive_cost[u] < archive_cost[v];
                                 });
 
-               size_t repl = archive_indexes[A - tail + _random_uint(tail)];
+               size_t repl = archive_indexes[A - tail + ran2.uniform_uint(tail)];
                if (repl != A - 1) {
                   archive[repl]      = archive.back();
                   archive_cost[repl] = archive_cost.back();
@@ -411,7 +411,7 @@ jSOa::STATUS jSOa::minimize()
             }
          } else {
             while (archive.size() > A_size) {
-               size_t i   = _random_uint(archive.size());
+               size_t i   = ran2.uniform_uint(archive.size());
                archive[i] = archive.back();
                archive.pop_back();
             }
@@ -463,6 +463,26 @@ size_t jSOa::_get_best_parameters(std::vector<Eigen::VectorXd> *pop, std::vector
    }
    _parameters = (*pop)[k];
    return k;
+}
+
+void jSOa::_check_meta_parameters()
+{
+
+   if (_mp.NP_ini < 4)
+      throw std::invalid_argument("jSOa meta-parameter NP_ini (population size) must be >= 4");
+   if (_mp.NP_min < 4)
+      throw std::invalid_argument("jSOa meta-parameter NP_min (population size) must be >= 4");
+   if (_mp.NP_min > _mp.NP_ini)
+      throw std::invalid_argument("jSOa meta-parameter NP_min must be <= NP_ini");
+
+   if (_mp.p_max > 1 || _mp.p_max <= 0. || _mp.p_min < 0. || _mp.p_min > 1. ||
+       _mp.p_min > _mp.p_max)
+      throw std::invalid_argument("jSOa: must be 0<= p_min <= p_max <= 1");
+
+   if (_mp.H <= 4) throw std::invalid_argument("jSOa: H must be > 4");
+
+   if (_mp.ap > 1. || _mp.ap <= 0.)
+      throw std::invalid_argument("jSOa: must be 0 < ap <= 1., ideally 0.2 <= ap <= 0.4");
 }
 
 } // namespace nadir

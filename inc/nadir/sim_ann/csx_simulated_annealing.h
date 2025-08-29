@@ -1,7 +1,7 @@
 #ifndef NADIR_CSX_SIMULATED_ANNEALING_H
 #define NADIR_CSX_SIMULATED_ANNEALING_H
 
-#include "nadir/context_simulated_annealing.h"
+#include "nadir/sim_ann/context_simulated_annealing.h"
 
 /**
  * @file csx_simulated_annealing.h
@@ -29,7 +29,6 @@ enum class CSxCase : unsigned {
    CS11, /* Random in [Tx, x Tx] WARNING: use it only with max_iter termination schemes! */
    // CS12, /* Not implemented, depends on current accepted outcome */
    // CS13, /* Not implemented, depends on current accepted outcome */
-   CUSTOM,
 
 };
 

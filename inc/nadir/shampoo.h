@@ -39,6 +39,8 @@ class Shampoo : public Minimizer
             double grad_toll = 1.0e-8;
             /// Tollerance on the \f$ \Delta F \f$  in subsequent steps
             double diff_value_toll = 1.0e-8;
+            /// Progress real time to stderr
+            bool real_time_progress = false;
       };
 
       /// \name Constructor
@@ -51,19 +53,21 @@ class Shampoo : public Minimizer
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      Shampoo(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
-
-      /**
-       * @brief Construct a new Shampoo minimizer
-       *
-       * @param mp   The Meta-parameters
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      Shampoo(MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      Shampoo(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       virtual ~Shampoo() = default;
       ///@}
+
+      void ChangeMetaParameters(MetaParameters mp)
+      {
+         _mp = mp;
+      }
+
+      /// Returns the meta-parameters
+      MetaParameters GetMetaParameters() const
+      {
+         return _mp;
+      }
 
       /**
        * @brief Main function: execute the minimization
@@ -75,13 +79,6 @@ class Shampoo : public Minimizer
    private:
       /// Meta-parameters
       MetaParameters _mp;
-      /// Gradient
-      Eigen::VectorXd _gt;
-      Eigen::MatrixXd _G_acc;
-      Eigen::MatrixXd _P;
-
-      /// epsilon * I
-      Eigen::MatrixXd _eps_Id;
 };
 } // namespace nadir
 

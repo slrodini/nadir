@@ -58,15 +58,7 @@ class TAdam : public Minimizer
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      TAdam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
-
-      /**
-       * @brief Construct a new TAdam minimizer
-       *
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      TAdam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      TAdam(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       virtual ~TAdam() = default;
       ///@}
@@ -81,8 +73,13 @@ class TAdam : public Minimizer
          _scheduler = scheduler;
       }
 
+      void ChangeMetaParameters(MetaParameters mp)
+      {
+         _mp = mp;
+      }
+
       /// Returns the meta-parameters
-      const MetaParameters &GetMetaParameters() const
+      MetaParameters GetMetaParameters() const
       {
          return _mp;
       }
@@ -100,6 +97,13 @@ class TAdam : public Minimizer
 
       /// The scheduler for a time-dependent learning rate (defaulted to unit function)
       std::function<double(size_t)> _scheduler;
+
+      void _reset() override
+      {
+         _scheduler = [](size_t) -> double {
+            return 1.;
+         };
+      }
 };
 } // namespace nadir
 

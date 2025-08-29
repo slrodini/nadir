@@ -1,4 +1,4 @@
-#include <nadir/nadir.h>
+#include "nadir/nadir.h"
 
 class TestCostFunction : public nadir::NadirCostFunction
 {

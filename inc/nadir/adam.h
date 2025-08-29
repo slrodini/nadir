@@ -72,18 +72,15 @@ class Adam : public Minimizer
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      Adam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
-
-      /**
-       * @brief Construct a new Adam minimizer
-       *
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      Adam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      Adam(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       virtual ~Adam() = default;
       ///@}
+
+      void ChangeMetaParameters(MetaParameters mp)
+      {
+         _mp = mp;
+      }
 
       /**
        * @brief Set the Scheduler object for variable learning rate
@@ -110,7 +107,7 @@ class Adam : public Minimizer
 
    private:
       /// Values of previous and current cost function
-      double f_new, f_old;
+      double _f_new, _f_old;
 
       /// Internal temporary vectors for the minimizer
       Eigen::VectorXd _gt, _mt, _vt;
@@ -141,6 +138,8 @@ class Adam : public Minimizer
       const std::function<double(double)> sign = [](double x) {
          return (x > 0) - (x < 0);
       };
+
+      void _reset() override;
 };
 } // namespace nadir
 

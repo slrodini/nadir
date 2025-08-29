@@ -1,7 +1,7 @@
 #ifndef NADIR_ACX_SIMULATED_ANNEALING_H
 #define NADIR_ACX_SIMULATED_ANNEALING_H
 
-#include "nadir/context_simulated_annealing.h"
+#include "nadir/sim_ann/context_simulated_annealing.h"
 
 /**
  * @file acx_simulated_annealing.h
@@ -26,7 +26,6 @@ enum class ACxCase : unsigned {
    // AC8, /* Uses best solution, not implemented */
    // AC9, /* Uses memory update, not yet provided by implementation */
    AC10, /* Accept only improving solutions */
-   CUSTOM,
 
 };
 

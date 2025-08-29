@@ -30,25 +30,11 @@ class CMA_ES : public Minimizer
 
    public:
       CMA_ES(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-          : Minimizer(fnc, pars), _mp(mp), _n(pars.size()), _p0(pars)
-      {
-         _init();
-      };
+          : Minimizer(fnc, pars), _mp(mp), _mp0(mp), _p0(pars) {};
 
-      CMA_ES(NadirCostFunction &fnc, long int pars = 1) : Minimizer(fnc, pars)
+      void ChangeMetaParameters(MetaParameters mp)
       {
-         throw std::runtime_error("Unsupported constructor");
-      }
-
-      virtual void SetInitialParameters(const Eigen::VectorXd &pars) override
-      {
-         _parameters = pars;
-      }
-
-      /// Remove ability to set parameters individually after initialization
-      virtual void SetInitialParameter(long int, double) override
-      {
-         throw std::runtime_error("CMA_ES cannot set parameters after initialization.");
+         _mp = mp;
       }
 
       STATUS minimize() override;
@@ -57,40 +43,20 @@ class CMA_ES : public Minimizer
 
    private:
       /// Only free metaparameter
-      MetaParameters _mp;
+      MetaParameters _mp, _mp0;
+      Ran2 ran2;
 
-      /// Cache some values, for convenience
-
-      /// Number of parameters
-      long int _n;
-
-      /// Populaiton size
-      size_t _lambda;
-
-      /// Number of positive weights
-      size_t _mu;
-
-      double _c_1, _c_mu, _c_c;
-
-      double _c_sigma, _d_sigma;
-
-      double _c_m;
-
-      double _mu_eff;
-
-      double _w_sum;
-
-      double _sigma;
-
-      /// Vector of weights
-      std::vector<double> _wi;
-
-      void _init();
+      void _reset() override
+      {
+         ran2.seed(-2);
+         _mp = _mp0;
+         _p0 = _parameters;
+      }
 
       inline void _fill_random_vec(Eigen::VectorXd &v)
       {
          for (long int i = 0; i < v.size(); i++) {
-            v(i) = _random_normal();
+            v(i) = ran2.normal();
          }
       }
 

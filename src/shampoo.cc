@@ -38,24 +38,21 @@ int inverse_matrix_sqrt(const Eigen::MatrixXd &A, double epsilon, Eigen::MatrixX
 namespace nadir
 {
 
-Shampoo::Shampoo(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-    : Minimizer(fnc, pars), _mp(mp), _gt(Eigen::VectorXd::Zero(pars.size()))
+Shampoo::Shampoo(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+    : Minimizer(fnc, pars), _mp(mp)
 {
-   _G_acc  = mp.eps * Eigen::MatrixXd::Identity(pars.size(), pars.size());
-   _P      = mp.eps * Eigen::MatrixXd::Identity(pars.size(), pars.size());
-   _eps_Id = mp.eps * Eigen::MatrixXd::Identity(pars.size(), pars.size());
-}
-
-Shampoo::Shampoo(MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
-    : Minimizer(fnc, n_par), _mp(mp), _gt(Eigen::VectorXd::Zero(n_par))
-{
-   _G_acc  = mp.eps * Eigen::MatrixXd::Identity(n_par, n_par);
-   _P      = mp.eps * Eigen::MatrixXd::Identity(n_par, n_par);
-   _eps_Id = mp.eps * Eigen::MatrixXd::Identity(n_par, n_par);
 }
 
 Minimizer::STATUS Shampoo::minimize()
 {
+   long int n = _parameters.size();
+
+   Eigen::MatrixXd _G_acc  = _mp.eps * Eigen::MatrixXd::Identity(n, n);
+   Eigen::MatrixXd _P      = _mp.eps * Eigen::MatrixXd::Identity(n, n);
+   Eigen::MatrixXd _eps_Id = _mp.eps * Eigen::MatrixXd::Identity(n, n);
+
+   Eigen::VectorXd _gt = Eigen::VectorXd::Zero(n);
+
    Minimizer::STATUS status = Minimizer::STATUS::SUCCESS;
 
    double f_old = 0, f_new = 0.;
@@ -104,6 +101,12 @@ Minimizer::STATUS Shampoo::minimize()
       _buffer << "- {Iteration: " << t;
       _buffer << ", Function value: " << f_new;
       _buffer << ", Gradient norm: " << gradient_norm << "}" << std::endl;
+
+      if (_mp.real_time_progress) {
+         std::cerr << "- {Iteration: " << t;
+         std::cerr << ", Function value: " << f_new;
+         std::cerr << ", Gradient norm: " << gradient_norm << "}" << std::endl;
+      }
 
       f_old = f_new;
    }

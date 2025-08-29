@@ -4,21 +4,9 @@
 namespace nadir
 {
 // =================================================================================================
-TAdam::TAdam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+TAdam::TAdam(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
     : Minimizer(fnc, pars)
 {
-
-   _scheduler = [](size_t) {
-      return 1.;
-   };
-   _mp = mp;
-}
-
-// =================================================================================================
-TAdam::TAdam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
-    : Minimizer(fnc, n_par)
-{
-   _parameters = Eigen::VectorXd::Zero(n_par);
 
    _scheduler = [](size_t) {
       return 1.;

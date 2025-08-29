@@ -3,26 +3,21 @@
 namespace nadir
 {
 
-BFGS::BFGS(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-    : Minimizer(fnc, pars), _mp(mp)
+void BFGS::_reset()
 {
-   _gt        = Eigen::VectorXd::Zero(pars.size());
-   _gt_new    = Eigen::VectorXd::Zero(pars.size());
-   _par_trial = Eigen::VectorXd::Zero(pars.size());
-   _p         = Eigen::VectorXd::Zero(_parameters.size());
-   H          = Eigen::MatrixXd::Identity(pars.size(), pars.size()); /// Serach direction
-   Hinv       = Eigen::MatrixXd::Identity(pars.size(), pars.size());
+   auto n     = _parameters.size();
+   _gt        = Eigen::VectorXd::Zero(n);
+   _gt_new    = Eigen::VectorXd::Zero(n);
+   _par_trial = Eigen::VectorXd::Zero(n);
+   _p         = Eigen::VectorXd::Zero(n);
+   H          = Eigen::MatrixXd::Identity(n, n);
+   Hinv       = Eigen::MatrixXd::Identity(n, n);
 }
 
-BFGS::BFGS(MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
-    : Minimizer(fnc, n_par), _mp(mp)
+BFGS::BFGS(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+    : Minimizer(fnc, pars), _mp(mp)
 {
-   _gt        = Eigen::VectorXd::Zero(n_par);
-   _gt_new    = Eigen::VectorXd::Zero(n_par);
-   _par_trial = Eigen::VectorXd::Zero(_parameters.size());
-   _p         = Eigen::VectorXd::Zero(_parameters.size());
-   H          = Eigen::MatrixXd::Identity(n_par, n_par);
-   Hinv       = Eigen::MatrixXd::Identity(n_par, n_par);
+   _reset();
 }
 
 Minimizer::STATUS BFGS::minimize()

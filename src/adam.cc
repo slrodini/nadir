@@ -2,30 +2,24 @@
 
 namespace nadir
 {
+
 // =================================================================================================
-Adam::Adam(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-    : Minimizer(fnc, pars)
+void Adam::_reset()
 {
-   _gt        = Eigen::VectorXd::Zero(pars.size());
-   _mt        = Eigen::VectorXd::Zero(pars.size());
-   _vt        = Eigen::VectorXd::Zero(pars.size());
-   _vt_hat    = Eigen::VectorXd::Zero(pars.size());
-   _scheduler = [](size_t) {
-      return 1.;
-   };
-   _mp = mp;
+   _gt     = Eigen::VectorXd::Zero(_parameters.size());
+   _mt     = Eigen::VectorXd::Zero(_parameters.size());
+   _vt     = Eigen::VectorXd::Zero(_parameters.size());
+   _vt_hat = Eigen::VectorXd::Zero(_parameters.size());
+
+   _f_new = 0.;
+   _f_old = 0.;
 }
 
 // =================================================================================================
-Adam::Adam(const MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
-    : Minimizer(fnc, n_par)
+Adam::Adam(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars) : Minimizer(fnc, pars)
 {
-   _parameters = Eigen::VectorXd::Zero(n_par);
-   _gt         = Eigen::VectorXd::Zero(n_par);
-   _mt         = Eigen::VectorXd::Zero(n_par);
-   _vt         = Eigen::VectorXd::Zero(n_par);
-   _vt_hat     = Eigen::VectorXd::Zero(n_par);
-   _scheduler  = [](size_t) {
+   _reset();
+   _scheduler = [](size_t) {
       return 1.;
    };
    _mp = mp;
@@ -36,7 +30,7 @@ Adam::STATUS Adam::minimize()
 {
    STATUS status = STATUS::SUCCESS;
    size_t t      = 0;
-   _fnc.get().Evaluate(_parameters, f_old, _gt);
+   _fnc.get().Evaluate(_parameters, _f_old, _gt);
    while (t < _mp.max_it) {
 
       switch (_mp.variant) {
@@ -82,15 +76,15 @@ Adam::STATUS Adam::minimize()
          break;
       }
 
-      if (std::fabs(f_new - f_old) < _mp.diff_value_toll) {
+      if (std::fabs(_f_new - _f_old) < _mp.diff_value_toll) {
          status = STATUS::LOW_DIFF;
          break;
       }
-      f_old = f_new;
-      _buffer << "- {Iteration: " << t << ", Function value: " << f_new;
+      _f_old = _f_new;
+      _buffer << "- {Iteration: " << t << ", Function value: " << _f_new;
       _buffer << ", Gradient norm: " << gradient_norm << "}" << std::endl;
       if (_mp.real_time_progress) {
-         std::cerr << "- {Iteration: " << t << ", Function value: " << f_new;
+         std::cerr << "- {Iteration: " << t << ", Function value: " << _f_new;
          std::cerr << ", Gradient norm: " << gradient_norm << "}" << std::endl;
       }
    }
@@ -111,7 +105,7 @@ size_t Adam::step(size_t t)
    double alpha_t = _scheduler(t) * _mp.alpha * bias_corr_vt / (1. - pow_n(_mp.beta1, t));
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -137,7 +131,7 @@ size_t Adam::step_ams(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt.array() / (_vt_hat.array().sqrt() + _mp.eps));
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -159,7 +153,7 @@ size_t Adam::step_ams_v2(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt.array() / (_vt_hat.array().sqrt() + _mp.eps));
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -190,7 +184,7 @@ size_t Adam::step_nadam(size_t t)
    _parameters = _parameters.array() -
                  _scheduler(t) * alpha_t * (_mt_hat.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -211,7 +205,7 @@ size_t Adam::step_adamw(size_t t)
    _parameters = (_parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps))) *
                  (1. - alpha_t * _mp.lambda);
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -237,7 +231,7 @@ size_t Adam::step_adabelief(size_t t)
    double alpha_t = _scheduler(t) * _mp.alpha * bias_corr_vt / (1. - pow_n(_mp.beta1, t));
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -262,7 +256,7 @@ size_t Adam::step_adabelief_w(size_t t)
    _parameters    = _parameters.array() - alpha_t * (_mt.array() / (_vt.array().sqrt() + _mp.eps));
    _parameters *= (1.0 - _mp.lambda * alpha_t);
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }
@@ -281,7 +275,7 @@ size_t Adam::step_lion(size_t t)
    _parameters  = _parameters.array() - eta_t * _ct.unaryExpr(sign).array();
    _parameters *= (1. - _mp.lambda * eta_t);
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
    _mt = _mt * _mp.beta2 + (1 - _mp.beta2) * _gt;
 
    return t;
@@ -312,7 +306,7 @@ size_t Adam::step_radam(size_t t)
       _parameters    = _parameters - alpha_t * _mt;
    }
 
-   _fnc.get().Evaluate(_parameters, f_new, _gt);
+   _fnc.get().Evaluate(_parameters, _f_new, _gt);
 
    return t;
 }

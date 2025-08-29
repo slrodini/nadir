@@ -7,76 +7,87 @@
 namespace nadir
 {
 
-void CMA_ES::_init()
-{
-   double _alpha_m_mu, _alpha_m_mu_eff, _alpha_m_posdef;
-   double _mu_eff_minus;
-
-   _lambda = std::max(4 + static_cast<size_t>(floor(3 * log(_n))), _mp.lambda);
-   _sigma  = _mp.sigma;
-
-   _wi.resize(_lambda, 0.);
-
-   _mu = (size_t)floor(_lambda * 0.5);
-   // std::cout << _mu << std::endl;
-   double s_m = 0, s_m2 = 0;
-   double s_p = 0, s_p2 = 0;
-
-   for (size_t i = 0; i < _lambda; i++) {
-      _wi[i] = log(0.5 * (1 + _lambda) / ((double)i + 1));
-      // std::cout << i << " " << _wi[i] << std::endl;
-
-      if (_wi[i] < 0) {
-         s_m += _wi[i];
-         s_m2 += _wi[i] * _wi[i];
-      } else {
-         s_p += _wi[i];
-         s_p2 += _wi[i] * _wi[i];
-      }
-   }
-
-   _mu_eff       = s_p * s_p / s_p2;
-   _mu_eff_minus = s_m * s_m / s_m2;
-
-   _c_1 = 2. / (_mu_eff + pow(_n + 1.3, 2));
-   _c_c = (4. + _mu_eff / ((double)_n)) / (_n + 4. + 2. * _mu_eff / ((double)_n));
-   _c_mu =
-       std::min(1. - _c_1, 2. * (0.25 + _mu_eff + 1. / _mu_eff - 2.) / (pow(_n + 2, 2) + _mu_eff));
-
-   // _c_mu = std::min(1. - _c_1, 2. * (_mu_eff + 1. / _mu_eff - 2.) / (pow(_n + 2, 2) + _mu_eff));
-
-   _alpha_m_mu     = 1. + _c_1 / _c_mu;
-   _alpha_m_mu_eff = 1. + 2. * _mu_eff_minus / (2. + _mu_eff);
-   _alpha_m_posdef = (1. - _c_1 - _c_mu) / (_n * _c_mu);
-
-   for (size_t i = 0; i < _lambda; i++) {
-      if (_wi[i] >= 0) {
-         _wi[i] /= s_p;
-      } else {
-         _wi[i] *= std::min(_alpha_m_mu, std::min(_alpha_m_mu_eff, _alpha_m_posdef)) / (-s_m);
-      }
-   }
-
-   _c_sigma = (_mu_eff + 2.) / (_n + _mu_eff + 5.);
-   _d_sigma = 1 + _c_sigma + 2. * std::max(0., sqrt((_mu_eff - 1.) / (_n + 1.)) - 1.);
-
-   _c_m = 1.;
-
-   // // Check
-   // s = 0;
-   // for (size_t i = 0; i < _mu; i++) {
-   //    s += _wi[i];
-   // }
-   // std::cout << "Sum: " << s << std::endl;
-
-   _w_sum = 0;
-   for (size_t i = 0; i < _lambda; i++) {
-      _w_sum += _wi[i];
-   }
-}
-
 CMA_ES::STATUS CMA_ES::minimize()
 {
+
+   /// Number of parameters
+   long int _n = _parameters.size();
+
+   /// Populaiton size
+   size_t _lambda, _mu;
+
+   double _c_1, _c_mu, _c_c, _c_sigma, _d_sigma, _c_m, _mu_eff, _w_sum, _sigma;
+
+   /// Vector of weights
+   std::vector<double> _wi;
+
+   {
+      double _alpha_m_mu, _alpha_m_mu_eff, _alpha_m_posdef;
+      double _mu_eff_minus;
+
+      _lambda = std::max(4 + static_cast<size_t>(floor(3 * log(_n))), _mp.lambda);
+      _sigma  = _mp.sigma;
+
+      _wi.resize(_lambda, 0.);
+
+      _mu = (size_t)floor(_lambda * 0.5);
+      // std::cout << _mu << std::endl;
+      double s_m = 0, s_m2 = 0;
+      double s_p = 0, s_p2 = 0;
+
+      for (size_t i = 0; i < _lambda; i++) {
+         _wi[i] = log(0.5 * (1 + _lambda) / ((double)i + 1));
+         // std::cout << i << " " << _wi[i] << std::endl;
+
+         if (_wi[i] < 0) {
+            s_m += _wi[i];
+            s_m2 += _wi[i] * _wi[i];
+         } else {
+            s_p += _wi[i];
+            s_p2 += _wi[i] * _wi[i];
+         }
+      }
+
+      _mu_eff       = s_p * s_p / s_p2;
+      _mu_eff_minus = s_m * s_m / s_m2;
+
+      _c_1  = 2. / (_mu_eff + pow(_n + 1.3, 2));
+      _c_c  = (4. + _mu_eff / ((double)_n)) / (_n + 4. + 2. * _mu_eff / ((double)_n));
+      _c_mu = std::min(1. - _c_1,
+                       2. * (0.25 + _mu_eff + 1. / _mu_eff - 2.) / (pow(_n + 2, 2) + _mu_eff));
+
+      // _c_mu = std::min(1. - _c_1, 2. * (_mu_eff + 1. / _mu_eff - 2.) / (pow(_n + 2, 2) +
+      // _mu_eff));
+
+      _alpha_m_mu     = 1. + _c_1 / _c_mu;
+      _alpha_m_mu_eff = 1. + 2. * _mu_eff_minus / (2. + _mu_eff);
+      _alpha_m_posdef = (1. - _c_1 - _c_mu) / (_n * _c_mu);
+
+      for (size_t i = 0; i < _lambda; i++) {
+         if (_wi[i] >= 0) {
+            _wi[i] /= s_p;
+         } else {
+            _wi[i] *= std::min(_alpha_m_mu, std::min(_alpha_m_mu_eff, _alpha_m_posdef)) / (-s_m);
+         }
+      }
+
+      _c_sigma = (_mu_eff + 2.) / (_n + _mu_eff + 5.);
+      _d_sigma = 1 + _c_sigma + 2. * std::max(0., sqrt((_mu_eff - 1.) / (_n + 1.)) - 1.);
+
+      _c_m = 1.;
+
+      // // Check
+      // s = 0;
+      // for (size_t i = 0; i < _mu; i++) {
+      //    s += _wi[i];
+      // }
+      // std::cout << "Sum: " << s << std::endl;
+
+      _w_sum = 0;
+      for (size_t i = 0; i < _lambda; i++) {
+         _w_sum += _wi[i];
+      }
+   }
 
    /// Covariance matrix in the search space and its decomposition
    Eigen::MatrixXd C = Eigen::MatrixXd::Identity(_n, _n);
@@ -247,6 +258,7 @@ CMA_ES::STATUS CMA_ES::ipop_minimize(CMA_ES::IPOP_MetaParameters ipop_mp)
    double global_best;
    _fnc.get().Evaluate(_parameters, global_best);
    Eigen::VectorXd p_best = _p0;
+   long int _n            = _parameters.size();
 
    // Canonica value for lambda
    size_t lambda_def = 4 + static_cast<size_t>(floor(3 * log(_n)));
@@ -264,7 +276,7 @@ CMA_ES::STATUS CMA_ES::ipop_minimize(CMA_ES::IPOP_MetaParameters ipop_mp)
          _mp.sigma  = ipop_mp.sigma_ref;
 
          for (long int i = 0; i < _p0.size(); i++) {
-            _parameters(i) += _mp.sigma * _random_normal();
+            _parameters(i) += _mp.sigma * ran2.normal();
          }
       } else {
          const size_t lambda_large = (size_t)std::lround(
@@ -274,17 +286,16 @@ CMA_ES::STATUS CMA_ES::ipop_minimize(CMA_ES::IPOP_MetaParameters ipop_mp)
          // sigma0 = draw_sigma_small(ipop_mp.sigma_ref);
 
          double lt = 0.5 * lambda_def *
-                     pow((double)lambda_large / (double)lambda_def, pow(_random_uniform(), 2));
+                     pow((double)lambda_large / (double)lambda_def, pow(ran2.uniform(), 2));
          _mp.lambda = std::clamp((size_t)std::floor(lt), lambda_def, lambda_large / 2);
 
          // sigma0 = ipop_mp.sigma_ref * ((1. - 1.0e-2) * _random_uniform() + 1.0e-2);
-         double u  = _random_uniform();
+         double u  = ran2.uniform();
          _mp.sigma = ipop_mp.sigma_ref * std::pow(10.0, -2.0 * u);
 
          _parameters = p_best;
       }
 
-      _init();
       (void)minimize(); // single run
 
       evals_total += _cached_single_run.fnc_eval;

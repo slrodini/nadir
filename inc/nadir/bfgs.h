@@ -62,19 +62,15 @@ class BFGS : public Minimizer
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      BFGS(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
-
-      /**
-       * @brief Construct a new BFGS minimizer
-       *
-       * @param mp   The Meta-parameters
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      BFGS(MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      BFGS(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       virtual ~BFGS() = default;
       ///@}
+
+      void ChangeMetaParameters(MetaParameters mp)
+      {
+         _mp = mp;
+      }
 
       /**
        * @brief Main function: execute the minimization
@@ -111,6 +107,8 @@ class BFGS : public Minimizer
       double _zoom(double f_0, double g_0, double alpha_lo, double f_lo, double g_lo,
                    double alpha_hi, double f_hi, double g_hi);
       double _cu_interpolate(double a0, double f0, double g0, double a1, double f1, double g1);
+
+      void _reset() override;
 };
 
 /**
@@ -150,19 +148,15 @@ class LBFGS : public Minimizer
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      LBFGS(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
-
-      /**
-       * @brief Construct a new BFGS minimizer
-       *
-       * @param mp   The Meta-parameters
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      LBFGS(MetaParameters &mp, NadirCostFunction &fnc, long int n_par = 1);
+      LBFGS(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
       virtual ~LBFGS() = default;
       ///@}
+
+      void ChangeMetaParameters(MetaParameters mp)
+      {
+         _mp = mp;
+      }
 
       /**
        * @brief Main function: execute the minimization
@@ -178,17 +172,12 @@ class LBFGS : public Minimizer
       Eigen::VectorXd _gt;
       /// Serach direction
       Eigen::VectorXd _p;
+      /// History buffer
 
       /// Trial parameters, used in Wolfe line search
       Eigen::VectorXd _par_trial;
       /// Trial gradient, used in Wolfe line search and then overwritten in main loop
       Eigen::VectorXd _gt_new;
-
-      // History buffers
-      std::deque<Eigen::VectorXd> _s_list;
-      std::deque<Eigen::VectorXd> _y_list;
-      std::deque<double> _rho_list;
-      Eigen::VectorXd _q;
 
       /// Utility function, shorten the notation
       inline void _cost(const Eigen::VectorXd &p, double &v, Eigen::VectorXd &g)
@@ -197,12 +186,15 @@ class LBFGS : public Minimizer
       }
 
       /// Determines _p from two loop recursion formula
-      void _two_loop_recursion();
+      void _two_loop_recursion(std::deque<Eigen::VectorXd> &, std::deque<Eigen::VectorXd> &,
+                               std::deque<double> &, Eigen::VectorXd &);
       double _wolfe_ls(double f_val);
 
       double _zoom(double f_0, double g_0, double alpha_lo, double f_lo, double g_lo,
                    double alpha_hi, double f_hi, double g_hi);
       double _cu_interpolate(double a0, double f0, double g0, double a1, double f1, double g1);
+
+      void _reset() override;
 };
 
 } // namespace nadir

@@ -38,13 +38,13 @@ std::pair<double, double> test_rosenbrock()
    for (double i = 01; i < 10; i += 1) {
       for (double j = -10; j < 10; j += 1) {
          auto [delta_f, delta_p] = rosenbrock(i, j);
-         // std::cout << i << " " << j << " " << delta_f << " " << delta_p << std::endl;
+         std::cout << i << " " << j << " " << delta_f << " " << delta_p << std::endl;
          deltas_f.push_back(std::fabs(delta_f));
          deltas_p.push_back(delta_p);
       }
    }
    auto it_f = std::max_element(deltas_f.begin(), deltas_f.end());
-   auto it_p = std::max_element(deltas_f.begin(), deltas_f.end());
+   auto it_p = std::max_element(deltas_p.begin(), deltas_p.end());
 
    return {*it_f, *it_p};
 }
@@ -75,7 +75,7 @@ std::pair<double, double> rosenbrock(double x0, double y0)
    // Until min tempterature
    nadir::SC3 scx;
    // Best of k neighbour
-   nadir::NE3 nex(0.2, p.size(), 10);
+   nadir::NE3 nex(0.2, 10);
    // Metropolis
    nadir::AC1 acx;
    // Geometric cooling

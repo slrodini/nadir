@@ -3,24 +3,19 @@
 namespace nadir
 {
 
-LBFGS::LBFGS(MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-    : Minimizer(fnc, pars), _mp(mp)
+void LBFGS::_reset()
 {
-   _gt        = Eigen::VectorXd::Zero(pars.size());
-   _q         = Eigen::VectorXd::Zero(pars.size());
-   _gt_new    = Eigen::VectorXd::Zero(pars.size());
-   _par_trial = Eigen::VectorXd::Zero(pars.size());
-   _p         = Eigen::VectorXd::Zero(_parameters.size());
+   auto n     = _parameters.size();
+   _gt        = Eigen::VectorXd::Zero(n);
+   _p         = Eigen::VectorXd::Zero(n);
+   _par_trial = Eigen::VectorXd::Zero(n);
+   _gt_new    = Eigen::VectorXd::Zero(n);
 }
 
-LBFGS::LBFGS(MetaParameters &mp, NadirCostFunction &fnc, long int n_par)
-    : Minimizer(fnc, n_par), _mp(mp)
+LBFGS::LBFGS(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
+    : Minimizer(fnc, pars), _mp(mp)
 {
-   _gt        = Eigen::VectorXd::Zero(n_par);
-   _q         = Eigen::VectorXd::Zero(n_par);
-   _gt_new    = Eigen::VectorXd::Zero(n_par);
-   _par_trial = Eigen::VectorXd::Zero(_parameters.size());
-   _p         = Eigen::VectorXd::Zero(_parameters.size());
+   _reset();
 }
 
 Minimizer::STATUS LBFGS::minimize()
@@ -30,6 +25,12 @@ Minimizer::STATUS LBFGS::minimize()
    Eigen::VectorXd _s  = Eigen::VectorXd::Zero(_parameters.size());
    Eigen::VectorXd _y  = Eigen::VectorXd::Zero(_parameters.size());
    Eigen::VectorXd _Hs = Eigen::VectorXd::Zero(_parameters.size());
+
+   // History buffers
+   std::deque<Eigen::VectorXd> _s_list;
+   std::deque<Eigen::VectorXd> _y_list;
+   std::deque<double> _rho_list;
+   Eigen::VectorXd _q;
 
    Minimizer::STATUS status = Minimizer::STATUS::SUCCESS;
 
@@ -42,7 +43,7 @@ Minimizer::STATUS LBFGS::minimize()
       if (_s_list.empty()) {
          _p = -_gt;
       } else {
-         _two_loop_recursion();
+         _two_loop_recursion(_s_list, _y_list, _rho_list, _q);
       }
       double alpha = _wolfe_ls(f_old);
 
@@ -206,7 +207,9 @@ double LBFGS::_zoom(double f_0, double g_0, double a_lo, double f_lo, double g_l
    return a_trial;
 }
 
-void LBFGS::_two_loop_recursion()
+void LBFGS::_two_loop_recursion(std::deque<Eigen::VectorXd> &_s_list,
+                                std::deque<Eigen::VectorXd> &_y_list,
+                                std::deque<double> &_rho_list, Eigen::VectorXd &_q)
 {
    size_t k = _s_list.size();
    std::vector<double> alpha(k);

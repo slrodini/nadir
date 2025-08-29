@@ -23,7 +23,6 @@ enum class ITxCase {
    IT4, //!< T0 proportional to average gap in consecutive costs in a random walk
    IT6, //!< T0 as fixed probability p0 in a random walk
    IT7, //!< T0 from random walk, using min, max and average of gaps
-   CUSTOM,
 };
 
 /// General interface for ITx

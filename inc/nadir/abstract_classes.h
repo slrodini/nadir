@@ -146,42 +146,22 @@ class Minimizer
        */
       Minimizer(NadirCostFunction &fnc, Eigen::VectorXd pars) : _fnc(fnc), _parameters(pars) {};
 
-      /**
-       * @brief Construct a new Adam minimizer
-       *
-       * @param fnc   The cost function
-       * @param n_par The number of parameters (initial parameters set to 0)
-       */
-      Minimizer(NadirCostFunction &fnc, long int n_par = 1)
-          : _fnc(fnc), _parameters(Eigen::VectorXd::Zero(n_par)) {};
+      void Reset(NadirCostFunction &fnc, Eigen::VectorXd pars)
+      {
+         std::ostringstream{}.swap(_buffer);
+         _fnc_callback.reset();
+         _parameters = pars;
 
+         _fnc = fnc;
+
+         _reset();
+      }
       /**
        * @brief Empty destructor
        *
        */
       virtual ~Minimizer() = default;
       ///@}
-
-      /**
-       * @brief Set the initial parameters
-       *
-       * @param pars The array of initial parameters
-       */
-      virtual void SetInitialParameters(const Eigen::VectorXd &pars)
-      {
-         _parameters = pars;
-      }
-
-      /**
-       * @brief Setone of the initial parameters
-       *
-       * @param index The index of the parameter to be setted
-       * @param par   The value of the parameter
-       */
-      virtual void SetInitialParameter(long int index, double par)
-      {
-         _parameters(index) = par;
-      }
 
       /**
        * @brief Add a callback to the minimizer
@@ -235,6 +215,10 @@ class Minimizer
 
       /// Internal log buffer
       std::ostringstream _buffer;
+
+      virtual void _reset()
+      {
+      }
 };
 
 inline constexpr double pow_n(double x, size_t n)

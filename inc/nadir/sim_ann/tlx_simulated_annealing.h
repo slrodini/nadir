@@ -2,7 +2,7 @@
 #define NADIR_TLX_SIMULATED_ANNEALING_H
 
 #include "nadir/abstract_classes.h"
-#include "nadir/context_simulated_annealing.h"
+#include "nadir/sim_ann/context_simulated_annealing.h"
 
 /**
  * @file tlx_simulated_annealing.h
@@ -28,7 +28,6 @@ enum class TLxCase : unsigned {
    TL9,  /* Adaptive = L * k */
    TL10, /* Adaptive = k / L */
    TL11, /* Adaptive = L^(1/a) */
-   CUSTOM,
 };
 
 class TLx

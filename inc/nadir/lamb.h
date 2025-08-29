@@ -1,31 +1,11 @@
-#ifndef NADIR_SOAA_H
-#define NADIR_SOAA_H
-
 #include "nadir/abstract_classes.h"
-
-#include <Eigen/Core>
-#include <functional>
-
-/**
- * @file soaa.h
- *
- * @brief Class for SOAA algorithm https://arxiv.org/pdf/2410.02293
- *
- */
 
 namespace nadir
 {
-
-/**
- * @brief Main SOAA class
- *
- * Although similar to Adam and inspired by it, to this algorithm I dedicate a separate class to
- * have minimal codependence from the main Adam variants
- */
-class SOAA : public Minimizer
+class Lamb : public Minimizer
 {
    public:
-      /// Metaparameters for the Adam minimizer
+      /// Metaparameters for the Lamb minimizer
       struct MetaParameters {
             /// Max number of iteration
             size_t max_it = 100;
@@ -35,34 +15,36 @@ class SOAA : public Minimizer
             double beta1 = 0.9;
             /// Exponentaial decay rate for the moving average of the 2st moment
             double beta2 = 0.999;
-            /// Parameter for the decoupled weight decay variants
-            double gamma = 0.1;
-            /// ...
-            double lambda = 0.;
-            /// initial trust region
-            double dt0 = 10.;
             /// Regulator of the denominator in the update
             double eps = 1.0e-8;
             /// Tollerance on the gradient norm
             double grad_toll = 1.0e-8;
             /// Tollerance on the \f$ \Delta F \f$  in subsequent steps
             double diff_value_toll = 1.0e-8;
-            /// Progress real time to stderr
+            /// Parameter for the decoupled weight decay variants
+            double lambda = 0.;
+            /// Real time progress to stderr
             bool real_time_progress = false;
+            /// Parameters blocks
+            std::vector<long int> par_blocks = {0};
+            /// Scalin function
+            std::function<double(double)> phi = [](double x) {
+               return x;
+            };
       };
 
       /// \name Constructor
       ///@{
 
       /**
-       * @brief Construct a new SOAA minimizer
+       * @brief Construct a new Adam minimizer
        *
        * @param fnc  The cost function
        * @param pars The array of initial parameters
        */
-      SOAA(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
+      Lamb(const MetaParameters &mp, NadirCostFunction &fnc, Eigen::VectorXd pars);
 
-      virtual ~SOAA() = default;
+      virtual ~Lamb() = default;
       ///@}
 
       /**
@@ -78,6 +60,7 @@ class SOAA : public Minimizer
       void ChangeMetaParameters(MetaParameters mp)
       {
          _mp = mp;
+         throw std::runtime_error("lamb: MetaParameters need checks on par blocks");
       }
 
       /// Returns the meta-parameters
@@ -85,7 +68,6 @@ class SOAA : public Minimizer
       {
          return _mp;
       }
-
       /**
        * @brief Main function: execute the minimization
        *
@@ -100,18 +82,12 @@ class SOAA : public Minimizer
       /// The scheduler for a time-dependent learning rate (defaulted to unit function)
       std::function<double(size_t)> _scheduler;
 
-      /// Sign function, for internal use only
-      const std::function<double(double)> sign = [](double x) {
-         return (x > 0) - (x < 0);
-      };
-
       void _reset() override
       {
-         _scheduler = [](size_t) -> double {
+         _scheduler = [](size_t) {
             return 1.;
          };
       }
 };
-} // namespace nadir
 
-#endif
+} // namespace nadir

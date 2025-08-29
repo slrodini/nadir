@@ -2,7 +2,7 @@
 #define NADIR_NEX_SIMULATED_ANNEALING_H
 
 #include "nadir/abstract_classes.h"
-#include "nadir/context_simulated_annealing.h"
+#include "nadir/sim_ann/context_simulated_annealing.h"
 
 /**
  * @file nex_simulated_annealing.h
@@ -23,7 +23,6 @@ enum class NExCase {
    NE4, /* First improvement in k neighbours */
    NE5, /* Same as NE3, but with mono-parameter update */
    NE6, /* Same as NE4, but with mono-parameter update */
-   CUSTOM,
 
 };
 
@@ -47,8 +46,7 @@ class NEx
 class NE3 : public NEx
 {
    public:
-      NE3(double width, long int n_par, size_t n = 1)
-          : NEx(NExCase::NE3), _width(width), _n(n), _best(Eigen::VectorXd::Zero(n_par)) {};
+      NE3(double width, size_t n = 1) : NEx(NExCase::NE3), _width(width), _n(n) {};
       void operator()(SimAnnContext &context, NadirCostFunction &fnc,
                       const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars) override;
 
@@ -61,8 +59,7 @@ class NE3 : public NEx
 class NE4 : public NEx
 {
    public:
-      NE4(double width, size_t n, long int n_par)
-          : NEx(NExCase::NE4), _width(width), _n(n), _best(Eigen::VectorXd::Zero(n_par)) {};
+      NE4(double width, size_t n) : NEx(NExCase::NE4), _width(width), _n(n) {};
       void operator()(SimAnnContext &context, NadirCostFunction &fnc,
                       const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars) override;
 
@@ -75,8 +72,7 @@ class NE4 : public NEx
 class NE5 : public NEx
 {
    public:
-      NE5(double width, long int n_par, size_t n = 1)
-          : NEx(NExCase::NE5), _width(width), _n(n), _best(Eigen::VectorXd::Zero(n_par)) {};
+      NE5(double width, size_t n = 1) : NEx(NExCase::NE5), _width(width), _n(n) {};
       void operator()(SimAnnContext &context, NadirCostFunction &fnc,
                       const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars) override;
 
@@ -89,8 +85,7 @@ class NE5 : public NEx
 class NE6 : public NEx
 {
    public:
-      NE6(double width, size_t n, long int n_par)
-          : NEx(NExCase::NE6), _width(width), _n(n), _best(Eigen::VectorXd::Zero(n_par)) {};
+      NE6(double width, size_t n) : NEx(NExCase::NE6), _width(width), _n(n) {};
       void operator()(SimAnnContext &context, NadirCostFunction &fnc,
                       const Eigen::VectorXd &_incumbent_pars, Eigen::VectorXd &_pars) override;
 

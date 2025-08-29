@@ -2,7 +2,7 @@
 #define NADIR_DIFFERENTIAL_EVOLUTION_H
 
 #include "nadir/abstract_classes.h"
-
+#include "nadir/ran2.h"
 #include <Eigen/Core>
 
 /**
@@ -41,29 +41,9 @@ class DiffEvolution : public Minimizer
          _check_meta_parameters();
       };
 
-      /**
-       * @brief Construct a new DiffEvolution Minimizer
-       *
-       * @param mp    Meta-parameters
-       * @param fnc   Cost function
-       * @param n_par Number of parameters
-       */
-      DiffEvolution(MetaParameters mp, NadirCostFunction &fnc, long int n_par = 1)
-          : Minimizer(fnc, n_par), _mp(mp)
+      void ChangeMetaParameters(MetaParameters mp)
       {
-         _check_meta_parameters();
-      }
-
-      virtual void SetInitialParameters(const Eigen::VectorXd &pars) override
-      {
-         _parameters = pars;
-      }
-
-      /// Remove ability to set parameters individually after initialization
-      virtual void SetInitialParameter(long int, double) override
-      {
-         throw std::runtime_error(
-             "Differential Evolution cannot set parameters after initialization.");
+         _mp = mp;
       }
 
       /**
@@ -75,12 +55,18 @@ class DiffEvolution : public Minimizer
 
    private:
       MetaParameters _mp; //!< Meta-parameters
+      Ran2 ran2;
       /// Check consistency of metaparameters
       void _check_meta_parameters();
       /// Select three distinct indexes from each other and from fix index x
       void _get_a_b_c_index(size_t x, size_t &a, size_t &b, size_t &c);
       /// Extract best set of parameters from population
       size_t _get_best_parameters(std::vector<Eigen::VectorXd> *pop, std::vector<double> *costs);
+
+      void _reset() override
+      {
+         ran2.seed(-2);
+      }
 };
 
 class jSOa : public Minimizer
@@ -120,29 +106,10 @@ class jSOa : public Minimizer
        * @param pars Initial parameters (center of random generation)
        */
       jSOa(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-          : Minimizer(fnc, pars), _mp(mp) {};
-
-      /**
-       * @brief Construct a new DiffEvolution Minimizer
-       *
-       * @param mp    Meta-parameters
-       * @param fnc   Cost function
-       * @param n_par Number of parameters
-       */
-      jSOa(MetaParameters mp, NadirCostFunction &fnc, long int n_par = 1)
-          : Minimizer(fnc, n_par), _mp(mp) {};
-
-      virtual void SetInitialParameters(const Eigen::VectorXd &pars) override
+          : Minimizer(fnc, pars), _mp(mp)
       {
-         _parameters = pars;
-      }
-
-      /// Remove ability to set parameters individually after initialization
-      virtual void SetInitialParameter(long int, double) override
-      {
-         throw std::runtime_error(
-             "Differential Evolution cannot set parameters after initialization.");
-      }
+         _check_meta_parameters();
+      };
 
       /**
        * @brief Main function: execute the minimization
@@ -153,9 +120,16 @@ class jSOa : public Minimizer
 
    private:
       MetaParameters _mp; //!< Meta-parameters
+      Ran2 ran2;
 
       /// Extract best set of parameters from population
       size_t _get_best_parameters(std::vector<Eigen::VectorXd> *pop, std::vector<double> *costs);
+      void _check_meta_parameters();
+
+      void _reset() override
+      {
+         ran2.seed(-2);
+      }
 };
 
 } // namespace nadir
