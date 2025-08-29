@@ -242,8 +242,9 @@ jSOa::STATUS jSOa::minimize()
    size_t max_fnc_eval = _mp.NP_ini * _mp.max_iter;
 
    for (size_t t = 0; t < _mp.max_iter; t++) {
-      // double p      = _mp.p_min + t * (double)(_mp.p_max - _mp.p_min) / ((double)_mp.max_iter);
-      double p = _mp.p_min + fnc_eval * (double)(_mp.p_max - _mp.p_min) / ((double)max_fnc_eval);
+      double p = _mp.p_min + t * (double)(_mp.p_max - _mp.p_min) / ((double)_mp.max_iter);
+      // double p = _mp.p_min + fnc_eval * (double)(_mp.p_max - _mp.p_min) /
+      // ((double)max_fnc_eval);
 
       p             = std::clamp(p, _mp.p_min, _mp.p_max);
       size_t pcount = std::max<size_t>(2, (size_t)std::floor(p * NP));
@@ -367,9 +368,12 @@ jSOa::STATUS jSOa::minimize()
       _c_old      = _c_new;
       _c_new      = c_tmp;
 
-      size_t NP_new =
-          (size_t)std::floor(_mp.NP_min + (_mp.NP_ini - _mp.NP_min) *
-                                              (1.0 - (double)fnc_eval / (double)max_fnc_eval));
+      // size_t NP_new =
+      //     (size_t)std::floor(_mp.NP_min + (_mp.NP_ini - _mp.NP_min) *
+      //                                         (1.0 - (double)fnc_eval / (double)max_fnc_eval));
+      size_t NP_new = (size_t)std::floor(
+          _mp.NP_min + (_mp.NP_ini - _mp.NP_min) * (1.0 - (double)t / (double)_mp.max_iter));
+
       NP_new = std::max(_mp.NP_min, std::min(NP_new, NP));
       if (NP_new < NP) {
          std::stable_sort(costs_indexes.begin(), costs_indexes.end(),

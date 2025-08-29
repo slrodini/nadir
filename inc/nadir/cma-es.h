@@ -20,7 +20,7 @@ class CMA_ES : public Minimizer
       };
 
       // For multiple run with population growth
-      struct IPOP_MetaParameters {
+      struct BIPOP_MetaParameters {
             double sigma_ref        = 1.;
             double pop_growth       = 2.0;
             size_t max_fnc_eval     = 1000000;
@@ -29,28 +29,33 @@ class CMA_ES : public Minimizer
       };
 
    public:
-      CMA_ES(MetaParameters mp, NadirCostFunction &fnc, Eigen::VectorXd pars)
-          : Minimizer(fnc, pars), _mp(mp), _mp0(mp), _p0(pars) {};
+      CMA_ES(MetaParameters mp, BIPOP_MetaParameters bipop_mp, NadirCostFunction &fnc,
+             Eigen::VectorXd pars)
+          : Minimizer(fnc, pars), _mp(mp), _mp0(mp), _bipop_mp(bipop_mp), _bipop_mp0(bipop_mp),
+            _p0(pars) {};
 
-      void ChangeMetaParameters(MetaParameters mp)
+      void ChangeMetaParameters(MetaParameters mp, BIPOP_MetaParameters bipop_mp)
       {
-         _mp = mp;
+         _mp       = mp;
+         _bipop_mp = bipop_mp;
       }
 
-      STATUS minimize() override;
+      STATUS single_minimize();
 
-      STATUS ipop_minimize(IPOP_MetaParameters ipop_mp);
+      STATUS minimize() override;
 
    private:
       /// Only free metaparameter
       MetaParameters _mp, _mp0;
+      BIPOP_MetaParameters _bipop_mp, _bipop_mp0;
       Ran2 ran2;
 
       void _reset() override
       {
          ran2.seed(-2);
-         _mp = _mp0;
-         _p0 = _parameters;
+         _mp       = _mp0;
+         _bipop_mp = _bipop_mp0;
+         _p0       = _parameters;
       }
 
       inline void _fill_random_vec(Eigen::VectorXd &v)

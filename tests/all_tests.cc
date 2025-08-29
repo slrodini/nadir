@@ -51,9 +51,33 @@ int main()
    }
 
    // ---------------------------------------------------------------------------------------------
-   // SimulatedAnnealing
+   // CMA-ES
    // ---------------------------------------------------------------------------------------------
    if (true) {
+      std::cout << div << "\n";
+      std::cout << "Running CMA-ES...\n";
+
+      nadir::CMA_ES::MetaParameters mp = {
+          .sigma              = 1.0,
+          .max_fnc_eval       = 100000,
+          .max_iter           = 200,
+          .real_time_progress = false,
+      };
+
+      nadir::CMA_ES::BIPOP_MetaParameters mp_2 = {
+          .sigma_ref          = 10.0,
+          .max_fnc_eval       = 10000000,
+          .max_iter           = 50,
+          .real_time_progress = false,
+      };
+      nadir::CMA_ES cmaes(mp, mp_2, dummy, p_dummy);
+      (void)run_all(cmaes, 5, 1.0e-8, {2, 4, 8, 12});
+   }
+
+   // ---------------------------------------------------------------------------------------------
+   // SimulatedAnnealing
+   // ---------------------------------------------------------------------------------------------
+   if (false) {
       std::cout << div << "\n";
       std::cout << "Running SimulatedAnnealing...\n";
 
